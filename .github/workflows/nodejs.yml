@@ -45,7 +45,7 @@ jobs:
         working-directory: ./website
         run: |
           sudo -i
-          sudo chown -R $USER ./build
+          sudo chown -R $USER ./build/jest
 
       - name: Docschina Github Action
         id: deployStatic
