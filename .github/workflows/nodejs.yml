@@ -22,7 +22,6 @@ jobs:
 
       - name: Cache NPM dependencies
         uses: actions/cache@v2
-        working-directory: ./website
         with:
           path: ~/.npm
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
@@ -51,11 +50,10 @@ jobs:
       - name: Docschina Github Action
         id: deployStatic
         uses: lcxfs1991/docschina-actions@master
-        working-directory: ./website
         with:
           skipFiles: ${{ secrets.SKIP_FILES }}
           secretId: ${{ secrets.SECRET_ID }}
           secretKey: ${{ secrets.SECRET_KEY }}
-          staticSrcPath: ./build
+          staticSrcPath: ./website/build
           bucket: ${{ secrets.BUCKET }}
           region: ${{ secrets.REGION }}
