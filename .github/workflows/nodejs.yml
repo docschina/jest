@@ -23,7 +23,7 @@ jobs:
       - name: Install and Build
         run: |
           cd website
-          yarn install --pure-lockfile
+          yarn install
           node fetchSupporters.js
           yarn build
       - name: Grant Permission
