@@ -30,12 +30,16 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
 
-      - name: Install and Build
+      - name: Install
         run: |
           cd website
           yarn install
           node fetchSupporters.js
+
+      - name: Build
+        run: |
           yarn build
+
       - name: Grant Permission
         run: |
           sudo -i
