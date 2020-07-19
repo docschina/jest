@@ -22,6 +22,7 @@ jobs:
 
       - name: Cache NPM dependencies
         uses: actions/cache@v2
+        working-directory: ./website
         with:
           path: ~/.npm
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
@@ -31,26 +32,30 @@ jobs:
             ${{ runner.os }}-
 
       - name: Install
+        working-directory: ./website
         run: |
-          cd website
           yarn install
           node fetchSupporters.js
 
       - name: Build
+        working-directory: ./website
         run: |
           yarn build
 
       - name: Grant Permission
+        working-directory: ./website
         run: |
           sudo -i
-          sudo chown -R $USER ./website/build
+          sudo chown -R $USER ./build
+
       - name: Docschina Github Action
         id: deployStatic
         uses: lcxfs1991/docschina-actions@master
+        working-directory: ./website
         with:
           skipFiles: ${{ secrets.SKIP_FILES }}
           secretId: ${{ secrets.SECRET_ID }}
           secretKey: ${{ secrets.SECRET_KEY }}
-          staticSrcPath: ./website/build
+          staticSrcPath: ./build
           bucket: ${{ secrets.BUCKET }}
           region: ${{ secrets.REGION }}
