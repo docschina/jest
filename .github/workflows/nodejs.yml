@@ -45,7 +45,7 @@ jobs:
         working-directory: ./website
         run: |
           sudo -i
-          sudo chown -R $USER ./build/jest
+          sudo chown -R $USER ./build
 
       - name: Docschina Github Action
         id: deployStatic
@@ -54,6 +54,6 @@ jobs:
           skipFiles: ${{ secrets.SKIP_FILES }}
           secretId: ${{ secrets.SECRET_ID }}
           secretKey: ${{ secrets.SECRET_KEY }}
-          staticSrcPath: ./website/build
+          staticSrcPath: ./website/build/jest
           bucket: ${{ secrets.BUCKET }}
           region: ${{ secrets.REGION }}
