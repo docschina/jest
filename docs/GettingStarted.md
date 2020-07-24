@@ -1,23 +1,23 @@
 ---
 id: getting-started
-title: Getting Started
+title: 快速入门
 ---
 
-Install Jest using [`yarn`](https://yarnpkg.com/en/package/jest):
+使用 [`yarn`](https://yarnpkg.com/en/package/jest) 安装 Jest：
 
 ```bash
 yarn add --dev jest
 ```
 
-Or [`npm`](https://www.npmjs.com/):
+或使用 [`npm`](https://www.npmjs.com/) 安装：
 
 ```bash
 npm install --save-dev jest
 ```
 
-Note: Jest documentation uses `yarn` commands, but `npm` will also work. You can compare `yarn` and `npm` commands in the [yarn docs, here](https://yarnpkg.com/en/docs/migrating-from-npm#toc-cli-commands-comparison).
+注：Jest 的文档统一使用 `yarn` 指令，但使用 `npm` 同样可行。可以通过[ yarn 官方文档](https://yarnpkg.com/en/docs/migrating-from-npm#toc-cli-commands-comparison)进行 `yarn` 和 `npm` 的对比。
 
-Let's get started by writing a test for a hypothetical function that adds two numbers. First, create a `sum.js` file:
+下面我们开始给一个假定的函数写测试，这个函数的功能是两数相加。首先创建 `sum.js` 文件：
 
 ```javascript
 function sum(a, b) {
@@ -26,7 +26,7 @@ function sum(a, b) {
 module.exports = sum;
 ```
 
-Then, create a file named `sum.test.js`. This will contain our actual test:
+接下来，创建名为 `sum.test.js` 的文件。这个文件包含了实际测试内容：
 
 ```javascript
 const sum = require('./sum');
@@ -36,7 +36,7 @@ test('adds 1 + 2 to equal 3', () => {
 });
 ```
 
-Add the following section to your `package.json`:
+将如下代码添加到 `package.json` 中。
 
 ```json
 {
@@ -46,48 +46,48 @@ Add the following section to your `package.json`:
 }
 ```
 
-Finally, run `yarn test` or `npm run test` and Jest will print this message:
+最后，运行 `yarn test` 或者 `npm run test` ，Jest 将输出如下信息：
 
 ```bash
 PASS  ./sum.test.js
 ✓ adds 1 + 2 to equal 3 (5ms)
 ```
 
-**You just successfully wrote your first test using Jest!**
+**你刚才使用 Jest 成功地写出了第一个测试！**
 
-This test used `expect` and `toBe` to test that two values were exactly identical. To learn about the other things that Jest can test, see [Using Matchers](UsingMatchers.md).
+在此测试中，使用了 `expect` 和 `toBe` 来检测两个值是否完全相同。若要了解其它使用 Jest 可以测试的内容，请参阅 [使用匹配器(Matcher)](UsingMatchers.md)。
 
-## Running from command line
+## 使用命令行
 
-You can run Jest directly from the CLI (if it's globally available in your `PATH`, e.g. by `yarn global add jest` or `npm install jest --global`) with a variety of useful options.
+你可以直接从 CLI 运行 Jest 并使用一系列有用的配置参数（前提是已经配置了环境变量 `PATH` 使其全局可用，例如通过 `yarn global add jest` 或者 `npm install jest --global` 来安装 Jest）。
 
-Here's how to run Jest on files matching `my-test`, using `config.json` as a configuration file and display a native OS notification after the run:
+这里演示了如何对于能够匹配到 `my-test` 的文件运行 Jest，以 `config.json` 作为配置文件，并在运行后显示一个基于原生操作系统的通知：
 
 ```bash
 jest my-test --notify --config=config.json
 ```
 
-If you'd like to learn more about running `jest` through the command line, take a look at the [Jest CLI Options](CLI.md) page.
+如果想要了解更多在命令行中运行 `jest` 的内容，请参阅 [Jest CLI 配置项](CLI.md)页面.
 
-## Additional Configuration
+## 更多配置项
 
-### Generate a basic configuration file
+### 生成基础配置文件
 
-Based on your project, Jest will ask you a few questions and will create a basic configuration file with a short description for each option:
+Jest 将根据你的项目提出一系列问题，并且将创建一个基础配置文件。文件中的每一项都配有简短的说明：
 
 ```bash
 jest --init
 ```
 
-### Using Babel
+### 使用 Babel
 
-To use [Babel](http://babeljs.io/), install required dependencies via `yarn`:
+通过 `yarn` 安装所需要的依赖来使用 [Babel](http://babeljs.io/)。
 
 ```bash
 yarn add --dev babel-jest @babel/core @babel/preset-env
 ```
 
-Configure Babel to target your current version of Node by creating a `babel.config.js` file in the root of your project:
+在项目的根目录下创建 `babel.config.js` ，通过配置 Babel 使其能够兼容当前的 Node 版本。
 
 ```javascript
 // babel.config.js
@@ -105,17 +105,17 @@ module.exports = {
 };
 ```
 
-**The ideal configuration for Babel will depend on your project.** See [Babel's docs](https://babeljs.io/docs/en/) for more details.
+**Babel 的适配取决于项目本身。** 查阅 [Babel 官方文档](https://babeljs.io/docs/en/)来获得更多详细信息。
 
-<details><summary markdown="span"><strong>Making your Babel config jest-aware</strong></summary>
+<details><summary markdown="span"><strong>将 Babel 配置为 Jest 可感知的</strong></summary>
 
-Jest will set `process.env.NODE_ENV` to `'test'` if it's not set to something else. You can use that in your configuration to conditionally setup only the compilation needed for Jest, e.g.
+如果没有被设置成其它值，Jest 会把 `process.env.NODE_ENV` 设置成 `'test'` 。你可以运用在配置项中，从而根据实际情况设定适用于 Jest 的编译。例如：
 
 ```javascript
 // babel.config.js
 module.exports = api => {
   const isTest = api.env('test');
-  // You can use isTest to determine what presets and plugins to use.
+  // 你可以使用 isTest 来决定需要使用到的预设和插件。
 
   return {
     // ...
@@ -123,7 +123,7 @@ module.exports = api => {
 };
 ```
 
-> Note: `babel-jest` is automatically installed when installing Jest and will automatically transform files if a babel configuration exists in your project. To avoid this behavior, you can explicitly reset the `transform` configuration option:
+> 注：`babel-jest` 是在安装 Jest 时自动安装的，如果在你的项目中有 babel 的配置内容，那么它会自动进行文件的转换。如果想要避免这一行为，你可以显式地重新配置 `transform` 配置项：
 
 ```javascript
 // jest.config.js
@@ -134,9 +134,9 @@ module.exports = {
 
 </details>
 
-<details><summary markdown="span"><strong>Babel 6 support</strong></summary>
+<details><summary markdown="span"><strong>Babel 6 支持</strong></summary>
 
-Jest 24 dropped support for Babel 6. We highly recommend you to upgrade to Babel 7, which is actively maintained. However, if you cannot upgrade to Babel 7, either keep using Jest 23 or upgrade to Jest 24 with `babel-jest` locked at version 23, like in the example below:
+Jest 24 不再支持 Babel 6。我们强烈推荐升级至目前正在积极维护的 Babel 7。但是如果你无法升级到 Babel 7，可以继续使用 Jest 23，或者升级到 Jest 24 并且使 `babel-jest` 固定在 23 的版本，如下面的例子所示：
 
 ```
 "dependencies": {
@@ -147,27 +147,27 @@ Jest 24 dropped support for Babel 6. We highly recommend you to upgrade to Babel
 }
 ```
 
-While we generally recommend using the same version of every Jest package, this workaround will allow you to continue using the latest version of Jest with Babel 6 for now.
+虽然对于每一个 Jest 包来说，我们普遍推荐使用相同版本的 Babel，但是上述方式目前可以让你在使用最新的 Jest 的版本的同时使用 Babel 6。
 
 </details>
 
-### Using webpack
+### 使用 webpack
 
-Jest can be used in projects that use [webpack](https://webpack.js.org/) to manage assets, styles, and compilation. webpack does offer some unique challenges over other tools. Refer to the [webpack guide](Webpack.md) to get started.
+Jest 可以用于在使用 [webpack](https://webpack.js.org/) 管理资源、样式和编译方式的项目中。webpack 和其它工具相比的确多了一些独特的挑战。请参阅 [webpack 指南](Webpack.md) 快速上手。
 
-### Using parcel
+### 使用 parcel
 
-Jest can be used in projects that use [parcel-bundler](https://parceljs.org/) to manage assets, styles, and compilation similar to webpack. Parcel requires zero configuration. Refer to the official [docs](https://parceljs.org/getting_started.html) to get started.
+Jest 可以用于在使用 [parcel-bundler](https://parceljs.org/) 管理资源、样式和编译方式的项目中，和 webpack 类似。Parcel 不需要任何配置。请参考官方[文档](https://parceljs.org/getting_started.html)快速入门。
 
-### Using TypeScript
+### 使用 Typescript
 
-Jest supports TypeScript, via Babel. First make sure you followed the instructions on [using Babel](#using-babel) above. Next install the `@babel/preset-typescript` via `yarn`:
+通过 Babel，Jest 能够支持 Typescript。首先要确保你遵循了上述[使用 Babel](#using-babel) 指引。接下来使用 `yarn` 安装 `@babel/preset-typescript` ：
 
 ```bash
 yarn add --dev @babel/preset-typescript
 ```
 
-Then add `@babel/preset-typescript` to the list of presets in your `babel.config.js`.
+然后将 `@babel/preset-typescript` 添加到 `babel.config.js` 中的 presets 列表中。
 
 ```diff
 // babel.config.js
@@ -179,4 +179,4 @@ module.exports = {
 };
 ```
 
-However, there are some [caveats](https://babeljs.io/docs/en/next/babel-plugin-transform-typescript.html#caveats) to using TypeScript with Babel. Because TypeScript support in Babel is transpilation, Jest will not type-check your tests as they are run. If you want that, you can use [ts-jest](https://github.com/kulshekhar/ts-jest).
+不过，在使用 Typescript 配合 Babel 的过程中，有一些[注意事项](https://babeljs.io/docs/en/next/babel-plugin-transform-typescript.html#caveats)。由于 Babel 是通过代码语言转换(Transpilation)支持 Typescript 的，Jest 在运行测试的过程中不会进行类型检查。如果想要此功能，可以使用 [ts-jest](https://github.com/kulshekhar/ts-jest)。
