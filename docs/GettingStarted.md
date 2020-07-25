@@ -105,7 +105,7 @@ module.exports = {
 };
 ```
 
-**Babel 的适配取决于项目本身。** 查阅 [Babel 官方文档](https://babeljs.io/docs/en/)来获得更多详细信息。
+**Babel 理想的配置取决于项目本身。** 查阅 [Babel 官方文档](https://babeljs.io/docs/en/)来获得更多详细信息。
 
 <details><summary markdown="span"><strong>将 Babel 配置为 Jest 可感知的</strong></summary>
 
