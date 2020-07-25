@@ -1,20 +1,20 @@
 ---
 id: asynchronous
-title: Testing Asynchronous Code
+title: 测试异步代码
 ---
 
-It's common in JavaScript for code to run asynchronously. When you have code that runs asynchronously, Jest needs to know when the code it is testing has completed, before it can move on to another test. Jest has several ways to handle this.
+异步代码在Javascript中是很常见的。当在运行异步代码时，Jest有多种方法可以知道代码什么时候可以完成测试，进而再去进行另一项测试。
 
-## Callbacks
+##  回调函数
 
-The most common asynchronous pattern is callbacks.
+回调函数是最常见的异步处理方式.
 
-For example, let's say that you have a `fetchData(callback)` function that fetches some data and calls `callback(data)` when it is complete. You want to test that this returned data is the string `'peanut butter'`.
+举个例子, 有一个`fetchData(callback)`函数用来请求某些数据，当请求完成时需要调用`callback(data)`回调函数。你想测试返回的数据是否是`'peanut butter'`这个字符串。
 
-By default, Jest tests complete once they reach the end of their execution. That means this test will _not_ work as intended:
+默认情况下，Jest测试会在执行结束后完成，这意味着测试没有按照预期工作。
 
 ```js
-// Don't do this!
+// 不要这样做！
 test('the data is peanut butter', () => {
   function callback(data) {
     expect(data).toBe('peanut butter');
@@ -24,12 +24,12 @@ test('the data is peanut butter', () => {
 });
 ```
 
-The problem is that the test will complete as soon as `fetchData` completes, before ever calling the callback.
+问题在于测试会在`fetchData`请求结束后，回调函数未被调用之前完成。
 
-There is an alternate form of `test` that fixes this. Instead of putting the test in a function with an empty argument, use a single argument called `done`. Jest will wait until the `done` callback is called before finishing the test.
+为了解决这个问题，采取了另外一种`test`的方式，通过使用单一函数参数`done`，Jest会等到`done`被调用之后结束测试，而不是把测试放在一个空参的函数中。
 
 ```js
-test('the data is peanut butter', done => {
+test('the data is peanut butter', done => {z c
   function callback(data) {
     try {
       expect(data).toBe('peanut butter');
@@ -43,15 +43,15 @@ test('the data is peanut butter', done => {
 });
 ```
 
-If `done()` is never called, the test will fail (with timeout error), which is what you want to happen.
+如果`done()`没有被调用（或者出现超时错误），本次测试将会失败，这是我们期望的结果。
 
-If the `expect` statement fails, it throws an error and `done()` is not called. If we want to see in the test log why it failed, we have to wrap `expect` in a `try` block and pass the error in the `catch` block to `done`. Otherwise, we end up with an opaque timeout error that doesn't show what value was received by `expect(data)`.
+如果`expect`执行失败，`done()`不会被调用，并且会抛出一个错误。如果我们想在测试记录中了解为什么出错，需要将`expect`放入`try`中，然后将错误传递给`catch` 中的`done`函数。否则，最后会显示一个模糊的超时错误，而不是`expect(data)`中接收到的数据。
 
 ## Promises
 
-If your code uses promises, there is a more straightforward way to handle asynchronous tests. Return a promise from your test, and Jest will wait for that promise to resolve. If the promise is rejected, the test will automatically fail.
+如果你在代码中使用了promise，那这里有一种更直接的方式去处理异步测试。通过在测试中返回一个promise，Jest会等待promise的resolve被执行，如果promise状态变为rejected，本次测试就会自动失败。
 
-For example, let's say that `fetchData`, instead of using a callback, returns a promise that is supposed to resolve to the string `'peanut butter'`. We could test it with:
+举个例子，`fetchData` 不使用回调函数，而是返回一个promise，resolve的值为一个字符串`'peanut butter'`，我们可以这样进行测试：
 
 ```js
 test('the data is peanut butter', () => {
@@ -61,9 +61,9 @@ test('the data is peanut butter', () => {
 });
 ```
 
-Be sure to return the promise - if you omit this `return` statement, your test will complete before the promise returned from `fetchData` resolves and then() has a chance to execute the callback.
+一定不要忘了返回promise，如果忘了return语句，测试会在`fetchData`中的promise被resolve以及then函数执行之前结束。
 
-If you expect a promise to be rejected, use the `.catch` method. Make sure to add `expect.assertions` to verify that a certain number of assertions are called. Otherwise a fulfilled promise would not fail the test.
+如果你预期一个promise的状态会变为rejected，可以使用`.catch`方法处理。确保添加`expect.assertions`去验证一定数量的断言被调用，否则，一个fullfilled状态的promise不会导致测试失败。
 
 ```js
 test('the fetch fails with an error', () => {
@@ -74,7 +74,7 @@ test('the fetch fails with an error', () => {
 
 ## `.resolves` / `.rejects`
 
-You can also use the `.resolves` matcher in your expect statement, and Jest will wait for that promise to resolve. If the promise is rejected, the test will automatically fail.
+你也可以使用`.resolves`在你的expect语句中，Jest一直等待直到promise执行resolve。如果promise的状态变为rejected，那么本次测试就会自动失败。
 
 ```js
 test('the data is peanut butter', () => {
@@ -82,9 +82,9 @@ test('the data is peanut butter', () => {
 });
 ```
 
-Be sure to return the assertion—if you omit this `return` statement, your test will complete before the promise returned from `fetchData` is resolved and then() has a chance to execute the callback.
+一定不要忘了返回断言，如果忘了return语句，测试会在`fetchData`中的promise被resolve以及then函数执行之前结束。
 
-If you expect a promise to be rejected, use the `.rejects` matcher. It works analogically to the `.resolves` matcher. If the promise is fulfilled, the test will automatically fail.
+如果你预期一个promise的状态会变为rejected，可以使用`.rejects`处理. 它的使用方式与`.resolves`相似。如果promise状态变为fullfilled，那么本次测试就会自动失败。
 
 ```js
 test('the fetch fails with an error', () => {
@@ -94,7 +94,7 @@ test('the fetch fails with an error', () => {
 
 ## Async/Await
 
-Alternatively, you can use `async` and `await` in your tests. To write an async test, use the `async` keyword in front of the function passed to `test`. For example, the same `fetchData` scenario can be tested with:
+或者，你也可以在测试中使用`async` 和 `await`。写一个async测试，需要将`async` 关键词放在函数前面传递给`test`，举个例子，相同的`fetchData`方案可以这样进行测试：
 
 ```js
 test('the data is peanut butter', async () => {
@@ -112,7 +112,7 @@ test('the fetch fails with an error', async () => {
 });
 ```
 
-You can combine `async` and `await` with `.resolves` or `.rejects`.
+你可以将 `async` 和 `await` 与 `.resolves` 或者 `.rejects`结合在一起.
 
 ```js
 test('the data is peanut butter', async () => {
@@ -124,6 +124,6 @@ test('the fetch fails with an error', async () => {
 });
 ```
 
-In these cases, `async` and `await` are effectively syntactic sugar for the same logic as the promises example uses.
+在这些例子中，`async` 和 `await`是promise的语法糖。
 
-None of these forms is particularly superior to the others, and you can mix and match them across a codebase or even in a single file. It just depends on which style you feel makes your tests simpler.
+这些方案中没有一个相较于其他方案更加优秀，你可以通过在代码库甚至单个文件中使用和比较，这取决于哪一种方式让你觉得测试更加简单。
