@@ -36,7 +36,7 @@ test('adds 1 + 2 to equal 3', () => {
 });
 ```
 
-将如下代码添加到 `package.json` 中。
+将如下代码添加到 `package.json` 中：
 
 ```json
 {
@@ -55,7 +55,7 @@ PASS  ./sum.test.js
 
 **你刚才使用 Jest 成功地写出了第一个测试！**
 
-在此测试中，使用了 `expect` 和 `toBe` 来检测两个值是否完全相同。若要了解其它使用 Jest 可以测试的内容，请参阅 [使用匹配器(Matcher)](UsingMatchers.md)。
+在此测试中，使用了 `expect` 和 `toBe` 来检测两个值是否完全相同。若要了解其它使用 Jest 可以测试的内容，请参阅[使用匹配器(Matcher)](UsingMatchers.md)。
 
 ## 使用命令行
 
@@ -109,7 +109,7 @@ module.exports = {
 
 <details><summary markdown="span"><strong>将 Babel 配置为 Jest 可感知的</strong></summary>
 
-如果没有被设置成其它值，Jest 会把 `process.env.NODE_ENV` 设置成 `'test'` 。你可以运用在配置项中，从而根据实际情况设定适用于 Jest 的编译。例如：
+如果 `process.env.NODE_ENV` 没有被设置成其它值，Jest 会把它设置成 `'test'` 。你可以运用在配置项中，从而根据实际情况设定适用于 Jest 的编译。例如：
 
 ```javascript
 // babel.config.js
