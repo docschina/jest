@@ -1,7 +1,6 @@
----
-id: setup-teardown
-title: Setup and Teardown
----
+
+# **Setup and Teardown**
+
 
 通常，在编写测试程序时，您需要在测试程序运行之前进行一些设置工作，在测试程序运行后需要进行一些整理工作。 Jest提供了辅助功能来处理此问题。
 ## 为多次测试重复设置
