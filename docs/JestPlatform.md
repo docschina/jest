@@ -1,35 +1,35 @@
 ---
 id: jest-platform
-title: Jest Platform
+title: Jest 平台
 ---
 
-You can cherry pick specific features of Jest and use them as standalone packages. Here's a list of the available packages:
+你可以使用 cherry pick 拉取 Jest 中的特定功能，将其作为独立的包进行引用。下面列出了可用的包：
 
 ## jest-changed-files
 
-Tool for identifying modified files in a git/hg repository. Exports two functions:
+一个用于在 git 或 hg 仓库中识别发生修改文件的工具。导出了两个函数：
 
-- `getChangedFilesForRoots` returns a promise that resolves to an object with the changed files and repos.
-- `findRepos` returns a promise that resolves to a set of repositories contained in the specified path.
+- `getChangedFilesForRoots` 返回一个 promise 对象，resolve 的内容是一个包含了发生了修改的文件和仓库的 object。
+- `findRepos` 返回一个 promise 对象，resolve 的内容是一系列指定路径中包含的仓库。
 
-### Example
+### 举例
 
 ```javascript
 const {getChangedFilesForRoots} = require('jest-changed-files');
 
-// print the set of modified files since last commit in the current repo
+// 打印出当前仓库下最后一次 commit 之后修改过的文件
 getChangedFilesForRoots(['./'], {
   lastCommit: true,
 }).then(result => console.log(result.changedFiles));
 ```
 
-You can read more about `jest-changed-files` in the [readme file](https://github.com/facebook/jest/blob/master/packages/jest-changed-files/README.md).
+你可以在 [readme 文件](https://github.com/facebook/jest/blob/master/packages/jest-changed-files/README.md)中了解 `jest-changed-files` 的更多内容。
 
 ## jest-diff
 
-Tool for visualizing changes in data. Exports a function that compares two values of any type and returns a "pretty-printed" string illustrating the difference between the two arguments.
+一个用于数据变化可视化的工具。导出了一个函数，这个函数用于比较任意类型的两个值，并返回一个“美化了打印”的字符串，用于展示两个参数之间的差异。
 
-### Example
+### 举例
 
 ```javascript
 const diff = require('jest-diff').default;
@@ -39,22 +39,22 @@ const b = {a: {b: {c: 6}}};
 
 const result = diff(a, b);
 
-// print diff
+// 打印出差异
 console.log(result);
 ```
 
 ## jest-docblock
 
-Tool for extracting and parsing the comments at the top of a JavaScript file. Exports various functions to manipulate the data inside the comment block.
+一个用于提取和转换 JavaScript 文件中顶部注释的工具。导出多个函数对注释块中的数据进行操作。
 
-### Example
+### 举例
 
 ```javascript
 const {parseWithComments} = require('jest-docblock');
 
 const code = `
 /**
- * This is a sample
+ * 这是一个样例
  *
  * @flow
  */
@@ -64,17 +64,17 @@ const code = `
 
 const parsed = parseWithComments(code);
 
-// prints an object with two attributes: comments and pragmas.
+// 打印出一个 object，它具有两个属性: comments 和 pragmas。
 console.log(parsed);
 ```
 
-You can read more about `jest-docblock` in the [readme file](https://github.com/facebook/jest/blob/master/packages/jest-docblock/README.md).
+你可以在 [readme 文件](https://github.com/facebook/jest/blob/master/packages/jest-docblock/README.md)中了解 `jest-docblock` 的更多内容。
 
 ## jest-get-type
 
-Module that identifies the primitive type of any JavaScript value. Exports a function that returns a string with the type of the value passed as argument.
+一个能够识别任何属于 JavaScript 值的原始类型的模块。导出了一个函数，这个函数返回一个字符串，表示作为参数传入的值的类型。
 
-### Example
+### 举例
 
 ```javascript
 const getType = require('jest-get-type');
@@ -83,22 +83,22 @@ const array = [1, 2, 3];
 const nullValue = null;
 const undefinedValue = undefined;
 
-// prints 'array'
+// 打印出 'array'
 console.log(getType(array));
-// prints 'null'
+// 打印出 'null'
 console.log(getType(nullValue));
-// prints 'undefined'
+// 打印出 'undefined'
 console.log(getType(undefinedValue));
 ```
 
 ## jest-validate
 
-Tool for validating configurations submitted by users. Exports a function that takes two arguments: the user's configuration and an object containing an example configuration and other options. The return value is an object with two attributes:
+一个用于校验用户所提交的配置项的工具。导出一个函数，这个函数需要两个参数：用户的配置项和一个包含了配置项示例与其它选项的 object。返回值是一个有两个属性的 object：
 
-- `hasDeprecationWarnings`, a boolean indicating whether the submitted configuration has deprecation warnings,
-- `isValid`, a boolean indicating whether the configuration is correct or not.
+- `hasDeprecationWarnings`，一个布尔值，表示所提交的配置项是否有不推荐的警告(Deprecation Warnings),
+- `isValid`，一个布尔值，表示配置项是否正确。
 
-### Example
+### 举例
 
 ```javascript
 const {validate} = require('jest-validate');
@@ -115,11 +115,11 @@ const result = validate(configByUser, {
 console.log(result);
 ```
 
-You can read more about `jest-validate` in the [readme file](https://github.com/facebook/jest/blob/master/packages/jest-validate/README.md).
+你可以在 [readme 文件](https://github.com/facebook/jest/blob/master/packages/jest-validate/README.md)中了解 `jest-validate` 的更多内容。
 
 ## jest-worker
 
-Module used for parallelization of tasks. Exports a class `JestWorker` that takes the path of Node.js module and lets you call the module's exported methods as if they were class methods, returning a promise that resolves when the specified method finishes its execution in a forked process.
+一个用于任务之间平行化(Parallelization)的模块。导出了一个 `JestWorker` 类，其中包含了 Node.js 的模块路径，如果模块导出的方法是类级方法，则可以允许调用，并且返回一个 promise，在指定的方法于一个分叉进程(Forked Process)中结束执行时 resolve。
 
 ### Example
 
@@ -128,7 +128,7 @@ Module used for parallelization of tasks. Exports a class `JestWorker` that take
 
 module.exports = {
   myHeavyTask: args => {
-    // long running CPU intensive task.
+    // 长时间运行的 CPU 密集型任务.
   },
 };
 ```
@@ -139,7 +139,7 @@ module.exports = {
 async function main() {
   const worker = new Worker(require.resolve('./heavy-task.js'));
 
-  // run 2 tasks in parallel with different arguments
+  // 使用不同参数，并行运行两个任务
   const results = await Promise.all([
     worker.myHeavyTask({foo: 'bar'}),
     worker.myHeavyTask({bar: 'foo'}),
@@ -151,13 +151,13 @@ async function main() {
 main();
 ```
 
-You can read more about `jest-worker` in the [readme file](https://github.com/facebook/jest/blob/master/packages/jest-worker/README.md).
+你可以在 [readme 文件](https://github.com/facebook/jest/blob/master/packages/jest-worker/README.md)中了解 `jest-worker` 的更多内容。
 
 ## pretty-format
 
-Exports a function that converts any JavaScript value into a human-readable string. Supports all built-in JavaScript types out of the box and allows extension for application-specific types via user-defined plugins.
+导出一个函数，这个函数能够将任何属于 JavaScript 的值转换成人类可读的字符串。它支持所有 JavaScript 的内置类型，开箱即用，并且允许通过用户定义的插件来对应用程序中特定的类型进行扩展。
 
-### Example
+### 举例
 
 ```javascript
 const prettyFormat = require('pretty-format');
@@ -171,4 +171,4 @@ val.array = [-0, Infinity, NaN];
 console.log(prettyFormat(val));
 ```
 
-You can read more about `pretty-format` in the [readme file](https://github.com/facebook/jest/blob/master/packages/pretty-format/README.md).
+你可以在 [readme 文件](https://github.com/facebook/jest/blob/master/packages/pretty-format/README.md)中了解 `pretty-format` 的更多内容。
