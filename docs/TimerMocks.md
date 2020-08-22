@@ -1,9 +1,9 @@
 ---
 id: timer-mocks
-title: Timer Mocks
+title: 模拟计时器
 ---
 
-The native timer functions (i.e., `setTimeout`, `setInterval`, `clearTimeout`, `clearInterval`) are less than ideal for a testing environment since they depend on real time to elapse. Jest can swap out timers with functions that allow you to control the passage of time. [Great Scott!](https://www.youtube.com/watch?v=QZoJ2Pt27BY)
+原生的计时器函数（如 `setTimeout`, `setInterval`, `clearTimeout`, `clearInterval`）在测试环境下并不理想，因为它们需要依靠真实时间流逝。Jest 可以通过函数来把计时器改变成能够让你控制时间流逝的计时器。[太棒了！](https://www.youtube.com/watch?v=QZoJ2Pt27BY)
 
 ```javascript
 // timerGame.js
@@ -35,11 +35,11 @@ test('waits 1 second before ending the game', () => {
 });
 ```
 
-Here we enable fake timers by calling `jest.useFakeTimers();`. This mocks out setTimeout and other timer functions with mock functions. If running multiple tests inside of one file or describe block, `jest.useFakeTimers();` can be called before each test manually or with a setup function such as `beforeEach`. Not doing so will result in the internal usage counter not being reset.
+在上述代码中，我们通过调用 `jest.useFakeTimers();` 开启了假计时器，这样一来 setTimeout 和其它计时器的函数就都成为模拟的了。如果在同一个文件，或者同一个描述块(Describe Block)中执行多段测试代码，`jest.useFakeTimers();` 可以在每一段测试代码前手动调用，或者使用如 `beforeEach` 这样的设置函数。如果不这么做，就会导致内部的引用计数器不会重置。
 
-## Run All Timers
+## 执行所有的计时器
 
-Another test we might want to write for this module is one that asserts that the callback is called after 1 second. To do this, we're going to use Jest's timer control APIs to fast-forward time right in the middle of the test:
+在本模块内容中，我们想要写的另一个测试是在一秒钟后断言一个回调函数被执行。我们将会使用到 Jest 的计时器控制 API，在测试过程中加速时间进程，以此实现测试内容。
 
 ```javascript
 test('calls the callback after 1 second', () => {
@@ -48,21 +48,21 @@ test('calls the callback after 1 second', () => {
 
   timerGame(callback);
 
-  // At this point in time, the callback should not have been called yet
+  // 在此时间点上，回调函数未被调用
   expect(callback).not.toBeCalled();
 
-  // Fast-forward until all timers have been executed
+  // 加速时间直到所有计时器都被执行
   jest.runAllTimers();
 
-  // Now our callback should have been called!
+  // 现在回调函数应该已经被调用了！
   expect(callback).toBeCalled();
   expect(callback).toHaveBeenCalledTimes(1);
 });
 ```
 
-## Run Pending Timers
+## 执行挂起的计时器(Pending Timer)
 
-There are also scenarios where you might have a recursive timer -- that is a timer that sets a new timer in its own callback. For these, running all the timers would be an endless loop… so something like `jest.runAllTimers()` is not desirable. For these cases you might use `jest.runOnlyPendingTimers()`:
+也存在着你有一个递归计时器的场景——递归计时器是指一个计时器在它自己的回调函数中设置了一个新的计时器。对于这一类来说，执行所有计时器会导致死循环。因此类似 `jest.runAllTimers()` 的代码就不是我们想要的。对于这种情况，你可能会使用到 `jest.runOnlyPendingTimers()`：
 
 ```javascript
 // infiniteTimerGame.js
@@ -75,7 +75,7 @@ function infiniteTimerGame(callback) {
     console.log("Time's up! 10 seconds before the next game starts...");
     callback && callback();
 
-    // Schedule the next game in 10 seconds
+    // 下一个 game 在 10 秒后开始
     setTimeout(() => {
       infiniteTimerGame(callback);
     }, 10000);
@@ -98,31 +98,31 @@ describe('infiniteTimerGame', () => {
 
     infiniteTimerGame(callback);
 
-    // At this point in time, there should have been a single call to
-    // setTimeout to schedule the end of the game in 1 second.
+    // 在此时间点上，应该会单独调用一次 setTimeout
+    // 来设置 game 在 1 秒钟后结束
     expect(setTimeout).toHaveBeenCalledTimes(1);
     expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 1000);
 
-    // Fast forward and exhaust only currently pending timers
-    // (but not any new timers that get created during that process)
+    // 加速时间，并且只结束当前挂起的计时器
+    // (而不是在此过程中新创建出的任何计时器)
     jest.runOnlyPendingTimers();
 
-    // At this point, our 1-second timer should have fired it's callback
+    // 在此时间点，我们 1 秒的计时器应该已经调用了回调函数
     expect(callback).toBeCalled();
 
-    // And it should have created a new timer to start the game over in
-    // 10 seconds
+    // 并且它应该已经创建了一个新的计时器
+    // 设置 10 秒钟后执行 game over
     expect(setTimeout).toHaveBeenCalledTimes(2);
     expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 10000);
   });
 });
 ```
 
-## Advance Timers by Time
+## 根据时间推进计时器
 
-##### renamed from `runTimersToTime` to `advanceTimersByTime` in Jest **22.0.0**
+##### `runTimersToTime` 已经在 Jest **22.0.0** 中更名为 `advanceTimersByTime`
 
-Another possibility is use `jest.advanceTimersByTime(msToRun)`. When this API is called, all timers are advanced by `msToRun` milliseconds. All pending "macro-tasks" that have been queued via setTimeout() or setInterval(), and would be executed during this time frame, will be executed. Additionally if those macro-tasks schedule new macro-tasks that would be executed within the same time frame, those will be executed until there are no more macro-tasks remaining in the queue that should be run within msToRun milliseconds.
+另一种可能是使用 `jest.advanceTimersByTime(msToRun)`。当这个 API 被调用时，所有的计时器都会向前推进 `msToRun` 毫秒。所有挂起的“宏任务”，即通过 setTimeout() 和 setInterval() 加入到队列中的，并在此时间片上将会执行的任务，会被执行。此外，如果这些宏任务又设置了同样会在这个时间片中执行的新宏任务，这些新的宏任务会直到 msToRun 毫秒内没有其它剩余宏任务在队列中时执行。
 
 ```javascript
 // timerGame.js
@@ -146,18 +146,18 @@ it('calls the callback after 1 second via advanceTimersByTime', () => {
 
   timerGame(callback);
 
-  // At this point in time, the callback should not have been called yet
+  // 在此时间点上，回调函数未被调用
   expect(callback).not.toBeCalled();
 
-  // Fast-forward until all timers have been executed
+  // 加速时间，直到所有计时器都被执行
   jest.advanceTimersByTime(1000);
 
-  // Now our callback should have been called!
+  // 现在回调函数应该已经被调用了！
   expect(callback).toBeCalled();
   expect(callback).toHaveBeenCalledTimes(1);
 });
 ```
 
-Lastly, it may occasionally be useful in some tests to be able to clear all of the pending timers. For this, we have `jest.clearAllTimers()`.
+最后，偶尔在某些测试代码中，能够清除所有挂起的计时器会很有用。这一点，我们有 `jest.clearAllTimers()`。
 
-The code for this example is available at [examples/timer](https://github.com/facebook/jest/tree/master/examples/timer).
+此例中的代码可以在 [example/timer](https://github.com/facebook/jest/tree/master/examples/timer) 中查看。
