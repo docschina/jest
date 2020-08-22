@@ -19,6 +19,6 @@ title: 更多资源
 
 ## 加入社区
 
-如果你想向其他的 Jest 使用者提问。 [Reactiflux](https://www.reactiflux.com/) 是一个有很多关于 Jest 的争论的社区。你可以阅读 `#testing` 标签下的消息。
+如果你想向其他的 Jest 使用者提问。 [Reactiflux](https://www.reactiflux.com/) 是一个有很多关于 Jest 的讨论的社区。你可以阅读 `#testing` 频道下的消息。
 
 关注 [Jest Twitter 账号](https://twitter.com/fbjest) 和 [博客](/blog/) 去了解 Jest 的世界。
