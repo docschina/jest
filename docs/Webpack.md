@@ -1,5 +1,7 @@
-
-# 使用 webpack
+---
+id: webpack
+title: Using with webpack
+---
 
 Jest 可以用在使用了 [webpack](https://webpack.js.org/) 的项目中去管理静态资源、样式和编译。与其它工具相比 webpack 有一些独特的优势，因为它直接与应用程序集成，允许管理样式表、图像和字体等资源，并且对于编译 Javascript 代码， Webpack 提供了广阔的生态系统和工具。
 
@@ -195,7 +197,6 @@ webpack 是一个复杂而灵活的工具，所以你可能需要进行一些必
 ## 使用 webpack 2
 
 webpack 2为 ES 模块提供了原生的支持。 但是，Jest 在 Node 中运行，因此需要将ES 模块转换为 CommonJS 模块。 因此，如果您使用的是 webpack 2, 你应该十分乐意将 Babel 配置为仅在“test”环境中将 ES 模块转换为 CommonJS 模块。
-
 
 ```json
 // .babelrc
