@@ -1,13 +1,13 @@
 ---
 id: using-matchers
-title: Using Matchers
+title: 匹配器的用法
 ---
 
-Jest uses "matchers" to let you test values in different ways. This document will introduce some commonly used matchers. For the full list, see the [`expect` API doc](ExpectAPI.md).
+Jest 使用“匹配器”让你以不同的方式测试值。该部分文档仅介绍一些常用的匹配器。若想查找完整的匹配器列表，请参见[`expect` API 文档](ExpectAPI.md)。
 
-## Common Matchers
+## 常见的匹配器
 
-The simplest way to test a value is with exact equality.
+最简单的测试方法就是判断两个值是否完全相等。
 
 ```js
 test('two plus two is four', () => {
@@ -15,9 +15,9 @@ test('two plus two is four', () => {
 });
 ```
 
-In this code, `expect(2 + 2)` returns an "expectation" object. You typically won't do much with these expectation objects except call matchers on them. In this code, `.toBe(4)` is the matcher. When Jest runs, it tracks all the failing matchers so that it can print out nice error messages for you.
+在这段代码中， `expect(2 + 2)` 返回一个 "expectation" 对象。除了让 "expectation" 对象调用匹配器之外，一般不会对它们做更多处理。上述代码中，`.toBe(4)` 就是匹配器。Jest 运行时会跟踪所有的匹配器，并为失败的匹配项打印错误提示.
 
-`toBe` uses `Object.is` to test exact equality. If you want to check the value of an object, use `toEqual` instead:
+`toBe` 相当于 `Object.is`，即完全相等(===)。如果需要检查对象的值，请使用 `toEqual` 代替：
 
 ```js
 test('object assignment', () => {
@@ -27,9 +27,9 @@ test('object assignment', () => {
 });
 ```
 
-`toEqual` recursively checks every field of an object or array.
+`toEqual` 会递归检查数组或对象每一项的值.
 
-You can also test for the opposite of a matcher:
+你还可以进行反向测试：
 
 ```js
 test('adding positive numbers is not zero', () => {
@@ -41,17 +41,17 @@ test('adding positive numbers is not zero', () => {
 });
 ```
 
-## Truthiness
+## 测试真值的匹配器
 
-In tests you sometimes need to distinguish between `undefined`, `null`, and `false`, but you sometimes do not want to treat these differently. Jest contains helpers that let you be explicit about what you want.
+很多时候测试需要区分 `undefined`、 `null` 和 `false`，为了方便区分，Jest 中定义了专门的匹配器：
 
-- `toBeNull` matches only `null`
-- `toBeUndefined` matches only `undefined`
-- `toBeDefined` is the opposite of `toBeUndefined`
-- `toBeTruthy` matches anything that an `if` statement treats as true
-- `toBeFalsy` matches anything that an `if` statement treats as false
+- `toBeNull` 只匹配 `null`
+- `toBeUndefined` 只匹配 `undefined`
+- `toBeDefined` 匹配结果与 `toBeUndefined` 相反
+- `toBeTruthy` 匹配 `if` 语句期望得到 true 的
+- `toBeFalsy` 匹配 `if` 语句期望得到 false 的
 
-For example:
+例如：
 
 ```js
 test('null', () => {
@@ -73,11 +73,11 @@ test('zero', () => {
 });
 ```
 
-You should use the matcher that most precisely corresponds to what you want your code to be doing.
+你应该根据你的代码选择最精确的匹配器。
 
-## Numbers
+## 有关数值比较的匹配器
 
-Most ways of comparing numbers have matcher equivalents.
+比较数字的大小也有相关的匹配器。
 
 ```js
 test('two plus two', () => {
@@ -87,25 +87,25 @@ test('two plus two', () => {
   expect(value).toBeLessThan(5);
   expect(value).toBeLessThanOrEqual(4.5);
 
-  // toBe and toEqual are equivalent for numbers
+  // toBe 和 toEqual 对数字的测试结果是一样的
   expect(value).toBe(4);
   expect(value).toEqual(4);
 });
 ```
 
-For floating point equality, use `toBeCloseTo` instead of `toEqual`, because you don't want a test to depend on a tiny rounding error.
+如果你不希望浮点数的测试存在误差，请使用 `toBeCloseTo` 来代替 `toEqual`。
 
 ```js
 test('adding floating point numbers', () => {
   const value = 0.1 + 0.2;
-  //expect(value).toBe(0.3);           This won't work because of rounding error
-  expect(value).toBeCloseTo(0.3); // This works.
+  //expect(value).toBe(0.3);           有误差。
+  expect(value).toBeCloseTo(0.3); // 无误差。
 });
 ```
 
-## Strings
+## 有关字符串比较的匹配器
 
-You can check strings against regular expressions with `toMatch`:
+字符串的测试可以结合正则表达式使用 `toMatch` 匹配器：
 
 ```js
 test('there is no I in team', () => {
@@ -117,9 +117,9 @@ test('but there is a "stop" in Christoph', () => {
 });
 ```
 
-## Arrays and iterables
+## 测试数组或可迭代对象的匹配器
 
-You can check if an array or iterable contains a particular item using `toContain`:
+测试数组或可迭代对象是否包含特定元素可以使用 `toContain` 匹配器：
 
 ```js
 const shoppingList = [
@@ -136,9 +136,9 @@ test('the shopping list has beer on it', () => {
 });
 ```
 
-## Exceptions
+## 捕捉函数执行异常的匹配器
 
-If you want to test whether a particular function throws an error when it's called, use `toThrow`.
+如果你想测试某个函数被调用时是否会抛出错误，可以使用 `toThrow`匹配器。
 
 ```js
 function compileAndroidCode() {
@@ -149,14 +149,14 @@ test('compiling android goes as expected', () => {
   expect(compileAndroidCode).toThrow();
   expect(compileAndroidCode).toThrow(Error);
 
-  // You can also use the exact error message or a regexp
+  // 你还可以自定义错误信息提示或者使用正则表达式。
   expect(compileAndroidCode).toThrow('you are using the wrong JDK');
   expect(compileAndroidCode).toThrow(/JDK/);
 });
 ```
 
-## And More
+## 了解更多
 
-This is just a taste. For a complete list of matchers, check out the [reference docs](ExpectAPI.md).
+这里只介绍了部分匹配器，完整版请参照 [参考文档](ExpectAPI.md)。
 
-Once you've learned about the matchers that are available, a good next step is to check out how Jest lets you [test asynchronous code](TestingAsyncCode.md).
+了解了可用的匹配器后，下一步就是检查 Jest 如何让你 [测试异步代码](TestingAsyncCode.md)。
