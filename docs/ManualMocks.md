@@ -1,25 +1,25 @@
 ---
 id: manual-mocks
-title: Manual Mocks
+title: 手动模拟
 ---
 
-Manual mocks are used to stub out functionality with mock data. For example, instead of accessing a remote resource like a website or a database, you might want to create a manual mock that allows you to use fake data. This ensures your tests will be fast and not flaky.
+手动模拟用于模拟数据存入功能。例如，你可能不希望访问网站或数据库之类的远程资源，而是想创建一个允许使用假数据的手动模拟。这样可以确保你在测试时快速且不易出错。
 
-## Mocking user modules
+## 模拟 user 模块
 
-Manual mocks are defined by writing a module in a `__mocks__/` subdirectory immediately adjacent to the module. For example, to mock a module called `user` in the `models` directory, create a file called `user.js` and put it in the `models/__mocks__` directory. Note that the `__mocks__` folder is case-sensitive, so naming the directory `__MOCKS__` will break on some systems.
+手动模拟是通过在紧邻模块的 `__mocks__/` 子目录中写入模块来定义的。例如，要在 `models` 目录中模拟一个名为 `user` 的模块，需要创建一个名为 `user.js` 的文件，然后将该文件放入 `models/__mocks__` 目录中。注意 `__mocks__` 文件夹区分大小写，如果写成 `__MOCKS__`，在某些系统上测试可能会中断。
 
-> When we require that module in our tests, explicitly calling `jest.mock('./moduleName')` is **required**.
+> 当测试中需要某个模块时，**必须**显式调用 `jest.mock('./moduleName')`。
 
-## Mocking Node modules
+## 模拟 Node 模块
 
-If the module you are mocking is a Node module (e.g.: `lodash`), the mock should be placed in the `__mocks__` directory adjacent to `node_modules` (unless you configured [`roots`](Configuration.md#roots-arraystring) to point to a folder other than the project root) and will be **automatically** mocked. There's no need to explicitly call `jest.mock('module_name')`.
+如果模拟一个 Node 模块（例如：`lodash` ），那么模拟的代码文件应该放在与 `node_modules` 相邻的 `__mocks__` 目录中（除非将 [`根目录`](Configuration.md#roots-arraystring) 配置为项目根目录以外的文件夹），此时模拟将**自动**执行。没必要显示调用 `jest.mock('module_name')`。
 
-Scoped modules can be mocked by creating a file in a directory structure that matches the name of the scoped module. For example, to mock a scoped module called `@scope/project-name`, create a file at `__mocks__/@scope/project-name.js`, creating the `@scope/` directory accordingly.
+可以通过在目录结构中创建一个与作用域模块名称匹配的文件来模拟作用域模块。例如，模拟一个名为 `@scope/project-name` 的作用域模块，需要创建一个 `__mocks__/@scope/project-name.js` 文件，这会相应地创建 `@scope/` 目录。
 
-> Warning: If we want to mock Node's core modules (e.g.: `fs` or `path`), then explicitly calling e.g. `jest.mock('path')` is **required**, because core Node modules are not mocked by default.
+> 请注意： 如果想模拟 Node 的核心模块（例如：`fs` 或 `path`），那么**需要**显示调用该模块，例如 `jest.mock('path')`，因为默认情况下不会对 Node 的核心模块进行模拟。
 
-## Examples
+## 实例演示
 
 ```bash
 .
@@ -34,11 +34,11 @@ Scoped modules can be mocked by creating a file in a directory structure that ma
 └── views
 ```
 
-When a manual mock exists for a given module, Jest's module system will use that module when explicitly calling `jest.mock('moduleName')`. However, when `automock` is set to `true`, the manual mock implementation will be used instead of the automatically created mock, even if `jest.mock('moduleName')` is not called. To opt out of this behavior you will need to explicitly call `jest.unmock('moduleName')` in tests that should use the actual module implementation.
+当给定模块存在手动模拟时，Jest 的模块系统将在显示调用 `jest.mock('moduleName')` 时使用该模块。但是，当 `automock` 设置为 `true` 时， 即使未调用 `jest.mock('moduleName')`，也会使用手动模拟实现，而不是用自动创建的模拟。要是不想用这种方式，需要在应该使用实际模块实现的测试中显式调用 `jest.unmock('moduleName')`。
 
-> Note: In order to mock properly, Jest needs `jest.mock('moduleName')` to be in the same scope as the `require/import` statement.
+> 注意： 为了正确模拟，Jest 需要让 `jest.mock('moduleName')` 语句和 `require/import` 语句处于同一作用域中。
 
-Here's a contrived example where we have a module that provides a summary of all the files in a given directory. In this case we use the core (built in) `fs` module.
+下面的代码是一个手写的实例，代码中有一个模块，可以提供给定目录中的所有文件。这种情况下使用（内置的）核心模块 `fs` 。
 
 ```javascript
 // FileSummarizer.js
@@ -56,7 +56,7 @@ function summarizeFilesInDirectorySync(directory) {
 exports.summarizeFilesInDirectorySync = summarizeFilesInDirectorySync;
 ```
 
-Since we'd like our tests to avoid actually hitting the disk (that's pretty slow and fragile), we create a manual mock for the `fs` module by extending an automatic mock. Our manual mock will implement custom versions of the `fs` APIs that we can build on for our tests:
+由于我们希望我们的测试避免实际操作磁盘（这样做很慢且不稳定），因此通过扩展自动模拟为 `fs` 模块来创建手动模拟。下面代码中的手动模拟将实现可用于测试的 `fs` API 的自定义版本：
 
 ```javascript
 // __mocks__/fs.js
@@ -66,9 +66,9 @@ const path = require('path');
 
 const fs = jest.createMockFromModule('fs');
 
-// This is a custom function that our tests can use during setup to specify
-// what the files on the "mock" filesystem should look like when any of the
-// `fs` APIs are used.
+// 这是一个自定义函数，我们的测试可以在安装过程中使用它来指定
+// 使用任何 `fs` API 时
+// “模拟”文件系统上的文件内容
 let mockFiles = Object.create(null);
 function __setMockFiles(newMockFiles) {
   mockFiles = Object.create(null);
@@ -82,8 +82,8 @@ function __setMockFiles(newMockFiles) {
   }
 }
 
-// A custom version of `readdirSync` that reads from the special mocked out
-// file list set via __setMockFiles
+// 自定义版本的 `readdirSync` 函数，它从
+// __setMockFiles 设置的特殊模拟文件列表中读取文件
 function readdirSync(directoryPath) {
   return mockFiles[directoryPath] || [];
 }
@@ -94,7 +94,7 @@ fs.readdirSync = readdirSync;
 module.exports = fs;
 ```
 
-Now we write our test. Note that we need to explicitly tell that we want to mock the `fs` module because it’s a core Node module:
+现在我们编写测试代码。请注意，由于 `fs` 模块是 Node 的核心模块，因此需要明确告知我们要模拟该模块：
 
 ```javascript
 // __tests__/FileSummarizer-test.js
@@ -109,7 +109,7 @@ describe('listFilesInDirectorySync', () => {
   };
 
   beforeEach(() => {
-    // Set up some mocked out file info before each test
+    // 在每次测试之前设置一些模拟文件信息
     require('fs').__setMockFiles(MOCK_FILE_INFO);
   });
 
@@ -124,21 +124,21 @@ describe('listFilesInDirectorySync', () => {
 });
 ```
 
-The example mock shown here uses [`jest.createMockFromModule`](JestObjectAPI.md#jestcreatemockfrommodulemodulename) to generate an automatic mock, and overrides its default behavior. This is the recommended approach, but is completely optional. If you do not want to use the automatic mock at all, you can export your own functions from the mock file. One downside to fully manual mocks is that they're manual – meaning you have to manually update them any time the module they are mocking changes. Because of this, it's best to use or extend the automatic mock when it works for your needs.
+这个例子使用 [`jest.createMockFromModule`](JestObjectAPI.md#jestcreatemockfrommodulemodulename) 生成自动模拟，并覆盖其默认行为。这是推荐的方法，但完全是可选的。如果你根本不想用自动模拟，则只需从模拟文件中导出自己的函数即可。完全手动模拟的一个缺点在于，它们是手动的——这意味着你必须在它们模拟的模块发生变化时手动更新。因此，最好在满足需求的时候使用或者扩展自动模拟。
 
-To ensure that a manual mock and its real implementation stay in sync, it might be useful to require the real module using [`jest.requireActual(moduleName)`](JestObjectAPI.md#jestrequireactualmodulename) in your manual mock and amending it with mock functions before exporting it.
+为了确保手动模拟和它的实际实现保持同步，可能需要在手动模拟中使用 [`jest.requireActual(moduleName)`](JestObjectAPI.md#jestrequireactualmodulename) 来引用实际模块，并在导出之前使用模拟函数修改它。
 
-The code for this example is available at [examples/manual-mocks](https://github.com/facebook/jest/tree/master/examples/manual-mocks).
+可以在 [examples/manual-mocks](https://github.com/facebook/jest/tree/master/examples/manual-mocks) 上找到该示例的代码。
 
-## Using with ES module imports
+## 与 ES 导入模块配合使用
 
-If you're using [ES module imports](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import) then you'll normally be inclined to put your `import` statements at the top of the test file. But often you need to instruct Jest to use a mock before modules use it. For this reason, Jest will automatically hoist `jest.mock` calls to the top of the module (before any imports). To learn more about this and see it in action, see [this repo](https://github.com/kentcdodds/how-jest-mocking-works).
+如果你使用 [ES 的导入模块](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import)，那么通常会将 `import` 语句放在测试文件的顶部。但是通常你需要在模块使用之前让 Jest 使用模拟。因此，Jest 会自动将 `jest.mock` 调用提升到模块的顶部（在任何 import 语句之前）。要了解更多相关信息并进行实际操作，请参见 [this repo](https://github.com/kentcdodds/how-jest-mocking-works).
 
-## Mocking methods which are not implemented in JSDOM
+## JSDOM 中未实现的模拟方法
 
-If some code uses a method which JSDOM (the DOM implementation used by Jest) hasn't implemented yet, testing it is not easily possible. This is e.g. the case with `window.matchMedia()`. Jest returns `TypeError: window.matchMedia is not a function` and doesn't properly execute the test.
+如果某些代码使用的方法在 JSDOM（Jest 使用的 DOM 实现）中还未实现，那么测试起来可能并不容易。例如，`window.matchMedia()`，执行时 Jest 会返回 `TypeError: window.matchMedia is not a function`，且无法正确执行测试。
 
-In this case, mocking `matchMedia` in the test file should solve the issue:
+在这种情况下，在测试文件中模拟 `matchMedia` 应该可以解决这个问题：
 
 ```js
 Object.defineProperty(window, 'matchMedia', {
@@ -147,8 +147,8 @@ Object.defineProperty(window, 'matchMedia', {
     matches: false,
     media: query,
     onchange: null,
-    addListener: jest.fn(), // deprecated
-    removeListener: jest.fn(), // deprecated
+    addListener: jest.fn(), // 不推荐使用
+    removeListener: jest.fn(), // 不推荐使用
     addEventListener: jest.fn(),
     removeEventListener: jest.fn(),
     dispatchEvent: jest.fn(),
@@ -156,13 +156,13 @@ Object.defineProperty(window, 'matchMedia', {
 });
 ```
 
-This works if `window.matchMedia()` is used in a function (or method) which is invoked in the test. If `window.matchMedia()` is executed directly in the tested file, Jest reports the same error. In this case, the solution is to move the manual mock into a separate file and include this one in the test **before** the tested file:
+如果在测试中调用的函数（或方法）中使用了 `window.matchMedia()`，这是可以的。如果在测试文件中直接执行 `window.matchMedia()`，Jest 会报相同的错误提示。在这种情况下，解决方案是将手动模拟放到一个单独的文件中，并在测试文件**之前**将其包含在测试中：
 
 ```js
-import './matchMedia.mock'; // Must be imported before the tested file
+import './matchMedia.mock'; // 必须在测试文件之前导入
 import {myMethod} from './file-to-test';
 
 describe('myMethod()', () => {
-  // Test the method here...
+  // 在这里测试方法...
 });
 ```
