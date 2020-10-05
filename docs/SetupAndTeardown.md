@@ -1,13 +1,15 @@
+---
+id: setup-teardown
+title: Setup and Teardown
+---
 
-# **Setup and Teardown**
+通常，在编写测试程序时，您需要在测试程序运行之前进行一些设置工作，在测试程序运行后需要进行一些整理工作。Jest提供了辅助功能来处理此问题。
 
-
-通常，在编写测试程序时，您需要在测试程序运行之前进行一些设置工作，在测试程序运行后需要进行一些整理工作。 Jest提供了辅助功能来处理此问题。
 ## 为多次测试重复设置
 
-如果您有一些工作需要对多个测试重复进行，则可以使用“ beforeEach”和“ afterEach”。
+如果您有一些工作需要对多个测试重复进行，则可以使用 “beforeEach” 和 “ afterEach”。
 
-例如，我们考虑一些与城市信息数据库进行交互的测试。 你必须在每个测试之前调用方法 `initializeCityDatabase()` ，同时必须在每个测试后，调用方法 `clearCityDatabase()`。 你可以这样做：
+例如，我们考虑一些与城市信息数据库进行交互的测试。 你必须在每个测试之前调用方法 `initializeCityDatabase()`，同时必须在每个测试后，调用方法 `clearCityDatabase()`。你可以这样做：
 
 ```js
 beforeEach(() => {
@@ -28,6 +30,7 @@ test('city database has San Juan', () => {
 ```
 
 `beforeEach` 和 `afterEach` 能够通过与 [异步代码测试](TestingAsyncCode.md) 相同的方式来处理异步代码  — 它们可以接收一个 done 参数或返回一个 promise。 例如，如果 `initializeCityDatabase()` 返回数据库初始化成功时的 promise ，我们会想到这样去返回这一 promise︰
+
 ```js
 beforeEach(() => {
   return initializeCityDatabase();
