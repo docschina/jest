@@ -3,31 +3,31 @@ id: tutorial-react
 title: Testing React Apps
 ---
 
-At Facebook, we use Jest to test [React](https://reactjs.org/) applications.
+在 Facebook, 我们使用 Jest 来测试 [React](https://reactjs.org/) 应用程序。
 
-## Setup
+## 安装
 
-### Setup with Create React App
+### 使用 Create React App
 
-If you are new to React, we recommend using [Create React App](https://create-react-app.dev/). It is ready to use and [ships with Jest](https://create-react-app.dev/docs/running-tests/#docsNav)! You will only need to add `react-test-renderer` for rendering snapshots.
+如果你是 React 新手，我们建议使用 [Create React App](https://create-react-app.dev/). 它已经包含了 [可用的 Jest](https://create-react-app.dev/docs/running-tests/#docsNav) ! 你只需要添加 `react-test-renderer` 来渲染快照。
 
-Run
+运行
 
 ```bash
 yarn add --dev react-test-renderer
 ```
 
-### Setup without Create React App
+### 不使用 Create React App
 
-If you have an existing application you'll need to install a few packages to make everything work well together. We are using the `babel-jest` package and the `react` babel preset to transform our code inside of the test environment. Also see [using babel](GettingStarted.md#using-babel).
+如果你有一个现有的应用程序，你将需要安装一些包，使一切顺利地协同工作。 我们使用 `babel-jest` 包和 `react` babel 预设在测试环境中转换代码. 另请参阅 [使用 babel](GettingStarted.md#using-babel).
 
-Run
+运行
 
 ```bash
 yarn add --dev jest babel-jest @babel/preset-env @babel/preset-react react-test-renderer
 ```
 
-Your `package.json` should look something like this (where `<current-version>` is the actual latest version number for the package). Please add the scripts and jest configuration entries:
+你的 `package.json` 应该看起来像这样 (其中 `<current-version>` 是包的实际最新版本号)。 请添加脚本和 jest 配置项：
 
 ```json
 // package.json
@@ -54,11 +54,11 @@ module.exports = {
 };
 ```
 
-**And you're good to go!**
+**准备工作已经完成!**
 
-### Snapshot Testing
+### 快照测试
 
-Let's create a [snapshot test](SnapshotTesting.md) for a Link component that renders hyperlinks:
+让我们来为一个渲染超链接的 Link 组件创建 [快照测试](SnapshotTesting.md) ：
 
 ```javascript
 // Link.react.js
@@ -104,7 +104,7 @@ export default class Link extends React.Component {
 }
 ```
 
-Now let's use React's test renderer and Jest's snapshot feature to interact with the component and capture the rendered output and create a snapshot file:
+现在，使用 React 的 test renderer 和 Jest 的快照特性来和组件交互，获得渲染结果和生成快照文件：
 
 ```javascript
 // Link.react.test.js
@@ -133,7 +133,7 @@ test('Link changes the class when hovered', () => {
 });
 ```
 
-When you run `yarn test` or `jest`, this will produce an output file like this:
+当你运行 `yarn test` 或者 `jest`, 将产生一个跟下面类似的文件：
 
 ```javascript
 // __tests__/__snapshots__/Link.react.test.js.snap
@@ -168,53 +168,53 @@ exports[`Link changes the class when hovered 3`] = `
 `;
 ```
 
-The next time you run the tests, the rendered output will be compared to the previously created snapshot. The snapshot should be committed along code changes. When a snapshot test fails, you need to inspect whether it is an intended or unintended change. If the change is expected you can invoke Jest with `jest -u` to overwrite the existing snapshot.
+下次你运行测试时，渲染的结果将会和之前创建的快照进行比较。 快照应该随代码更改一起提交。当快照测试失败时，您需要检查它是有意的还是无意的。如果需要更改，可以使用 `Jest-u` 调用 Jest 来覆盖现有快照。
 
-The code for this example is available at [examples/snapshot](https://github.com/facebook/jest/tree/master/examples/snapshot).
+这个例子的代码可以在 [examples/snapshot](https://github.com/facebook/jest/tree/master/examples/snapshot) 中找到.
 
-#### Snapshot Testing with Mocks, Enzyme and React 16
+#### 使用 Mocks, Enzyme 和 React 16 进行快照测试
 
-There's a caveat around snapshot testing when using Enzyme and React 16+. If you mock out a module using the following style:
+使用 Enzyme 和 React 16+ 时，快照测试需要注意一些事项， 如果你使用以下方式模拟一个模块:
 
 ```js
 jest.mock('../SomeDirectory/SomeComponent', () => 'SomeComponent');
 ```
 
-Then you will see warnings in the console:
+然后你将在控制台看到如下警告:
 
 ```bash
 Warning: <SomeComponent /> is using uppercase HTML. Always use lowercase HTML tags in React.
 
-# Or:
+# 或者:
 Warning: The tag <SomeComponent> is unrecognized in this browser. If you meant to render a React component, start its name with an uppercase letter.
 ```
 
-React 16 triggers these warnings due to how it checks element types, and the mocked module fails these checks. Your options are:
+React 16 触发这些警告是因为它检查元素类型的方式，而模拟的模块没有通过这些检查。你可选择的做法是：
 
-1.  Render as text. This way you won't see the props passed to the mock component in the snapshot, but it's straightforward:
+1、  作为文本呈现。 这种方式在快照中你将看不到传递给 mock 组件的属性， 但是它很简单直接：
     ```js
     jest.mock('./SomeComponent', () => () => 'SomeComponent');
     ```
-2.  Render as a custom element. DOM "custom elements" aren't checked for anything and shouldn't fire warnings. They are lowercase and have a dash in the name.
+2、  作为一个自定义元素呈现。 自定义元素构成的 DOM 没有检查任何内容也不应该会触发警告。 它们是小写的， 并且在名称中带有破折号。
     ```js
     jest.mock('./Widget', () => () => <mock-widget />);
     ```
-3.  Use `react-test-renderer`. The test renderer doesn't care about element types and will happily accept e.g. `SomeComponent`. You could check snapshots using the test renderer, and check component behavior separately using Enzyme.
-4.  Disable warnings all together (should be done in your jest setup file):
+3、  使用 `react-test-renderer`。 test renderer 不关心元素类型并且可以接受例如 `SomeComponent` 的写法。 你可以使用 test renderer 检查快照， 也可以使用 Enzyme 分别检查组件行为。
+4、  禁用警告（需要在 jest 的设置文件中完成)：
     ```js
     jest.mock('fbjs/lib/warning', () => require('fbjs/lib/emptyFunction'));
     ```
-    This shouldn't normally be your option of choice as useful warnings could be lost. However, in some cases, for example when testing react-native's components we are rendering react-native tags into the DOM and many warnings are irrelevant. Another option is to swizzle the console.warn and suppress specific warnings.
+    这通常不是一个正确的选择， 因为有用的警告可能会丢失。 然而， 在某些情况下， 例如在测试 react-native's 组件时， 我们将 react-native 标签渲染到 DOM 中会出现许多不相关的警告。 另一个做法是重写 console.warn 方法来抑制特定的警告。
 
-### DOM Testing
+### DOM 测试
 
-If you'd like to assert, and manipulate your rendered components you can use [react-testing-library](https://github.com/kentcdodds/react-testing-library), [Enzyme](http://airbnb.io/enzyme/), or React's [TestUtils](https://reactjs.org/docs/test-utils.html). The following two examples use react-testing-library and Enzyme.
+如果你想断言和操作渲染的组件， 你可以使用 [react-testing-library](https://github.com/kentcdodds/react-testing-library)， [Enzyme](http://airbnb.io/enzyme/), 或者 React 的 [TestUtils](https://reactjs.org/docs/test-utils.html)。 下面是两个使用 react-testing-library 和 Enzyme 的例子。
 
 #### react-testing-library
 
-You have to run `yarn add --dev @testing-library/react` to use react-testing-library.
+你必须运行 `yarn add --dev @testing-library/react` 命令来使用 react-testing-library.
 
-Let's implement a checkbox which swaps between two labels:
+让我们实现一个在两个标签之间切换的复选框：
 
 ```javascript
 // CheckboxWithLabel.js
@@ -226,7 +226,7 @@ export default class CheckboxWithLabel extends React.Component {
     super(props);
     this.state = {isChecked: false};
 
-    // bind manually because React class components don't auto-bind
+    // 手动绑定 this， 因为 React 组件不会自动绑定
     // https://reactjs.org/blog/2015/01/27/react-v0.13.0-beta-1.html#autobinding
     this.onChange = this.onChange.bind(this);
   }
@@ -256,8 +256,8 @@ import React from 'react';
 import {cleanup, fireEvent, render} from '@testing-library/react';
 import CheckboxWithLabel from '../CheckboxWithLabel';
 
-// Note: running cleanup afterEach is done automatically for you in @testing-library/react@9.0.0 or higher
-// unmount and cleanup DOM after the test is finished.
+// 注意： 在 @testing-library/react@9.0.0 或更高版本中， afterEach(cleanup) 会自动执行
+// 测试完成后卸载并清理 DOM。
 afterEach(cleanup);
 
 it('CheckboxWithLabel changes the text after click', () => {
@@ -273,13 +273,13 @@ it('CheckboxWithLabel changes the text after click', () => {
 });
 ```
 
-The code for this example is available at [examples/react-testing-library](https://github.com/facebook/jest/tree/master/examples/react-testing-library).
+这个例子的代码可以在 [examples/react-testing-library](https://github.com/facebook/jest/tree/master/examples/react-testing-library) 中找到。
 
 #### Enzyme
 
-You have to run `yarn add --dev enzyme` to use Enzyme. If you are using a React version below 15.5.0, you will also need to install `react-addons-test-utils`.
+你必须执行 `yarn add --dev enzyme` 命令来使用 Enzyme。 如果你使用的 React 版本在 15.5.0 以下， 你还需要安装 `react-addons-test-utils`.
 
-Let's rewrite the test from above using Enzyme instead of react-testing-library. We use Enzyme's [shallow renderer](http://airbnb.io/enzyme/docs/api/shallow.html) in this example.
+让我们使用 Enzyme 重写上面的测试而不是使用 react-testing-library。 在这个例子中我们使用 Enzyme 的 [shallow renderer](http://airbnb.io/enzyme/docs/api/shallow.html) 。
 
 ```javascript
 // __tests__/CheckboxWithLabel-test.js
@@ -289,7 +289,7 @@ import {shallow} from 'enzyme';
 import CheckboxWithLabel from '../CheckboxWithLabel';
 
 test('CheckboxWithLabel changes the text after click', () => {
-  // Render a checkbox with label in the document
+  // 渲染一个带标签的复选框
   const checkbox = shallow(<CheckboxWithLabel labelOn="On" labelOff="Off" />);
 
   expect(checkbox.text()).toEqual('Off');
@@ -300,11 +300,11 @@ test('CheckboxWithLabel changes the text after click', () => {
 });
 ```
 
-The code for this example is available at [examples/enzyme](https://github.com/facebook/jest/tree/master/examples/enzyme).
+这个例子的代码可以在 [examples/enzyme](https://github.com/facebook/jest/tree/master/examples/enzyme) 中找到。
 
-### Custom transformers
+### 自定义转译器
 
-If you need more advanced functionality, you can also build your own transformer. Instead of using babel-jest, here is an example of using babel:
+如果你需要更多的高级功能， 你可以建立自己的转译器而不是使用 babel-jest， 下面是一个使用 babel 的例子：
 
 ```javascript
 // custom-transformer.js
@@ -325,11 +325,11 @@ module.exports = {
 };
 ```
 
-Don't forget to install the `@babel/core` and `babel-preset-jest` packages for this example to work.
+别忘记安装 `@babel/core` 和 `babel-preset-jest` 包来使这个例子正常工作。
 
-To make this work with Jest you need to update your Jest configuration with this: `"transform": {"\\.js$": "path/to/custom-transformer.js"}`.
+要想使用 Jest 来实现这一点，你需要更新你的 Jest 配置文件： `"transform": {"\\.js$": "path/to/custom-transformer.js"}`.
 
-If you'd like to build a transformer with babel support, you can also use babel-jest to compose one and pass in your custom configuration options:
+如果您想构建一个支持 babel 的转换器，您也可以使用 babel jest 来编写一个，并传入自定义配置项：
 
 ```javascript
 const babelJest = require('babel-jest');
