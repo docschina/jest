@@ -1,23 +1,23 @@
 ---
 id: puppeteer
-title: Using with puppeteer
+title: 结合 Puppeteer 使用
 ---
 
-With the [Global Setup/Teardown](Configuration.md#globalsetup-string) and [Async Test Environment](Configuration.md#testenvironment-string) APIs, Jest can work smoothly with [puppeteer](https://github.com/GoogleChrome/puppeteer).
+通过[全局配置/卸载](Configuration.md#globalsetup-string)和[异步测试环境](Configuration.md#testenvironment-string)的 API, Jest 就可以与 [puppeteer](https://github.com/GoogleChrome/puppeteer) 无缝衔接了。
 
-> Generating code coverage for test files using Puppeteer is currently not possible if your test uses `page.$eval`, `page.$$eval` or `page.evaluate` as the passed function is executed outside of Jest's scope. Check out [issue #7962](https://github.com/facebook/jest/issues/7962#issuecomment-495272339) on GitHub for a workaround.
+> 目前，如果你的测试中使用了 `page.$eval`，`page.$$eval` 或者 `page.evaluate`，那么就无法使用 Puppeteer 给测试文件生成覆盖代码。这是因为传入的函数是在 Jest 的作用域以外执行的。请在 Github 上的 [issue #7962](https://github.com/facebook/jest/issues/7962#issuecomment-495272339) 中查看应对措施。
 
-## Use jest-puppeteer Preset
+## 使用 jest-puppeteer 预设
 
-[Jest Puppeteer](https://github.com/smooth-code/jest-puppeteer) provides all required configuration to run your tests using Puppeteer.
+[Jest Puppeteer](https://github.com/smooth-code/jest-puppeteer) 提供了使用 Puppeteer 运行测试代码所需要的所有配置。
 
-1.  First install `jest-puppeteer`
+1. 首先，安装 `jest-puppeteer`
 
 ```
 yarn add --dev jest-puppeteer
 ```
 
-2.  Specify preset in your Jest configuration:
+2. 在 Jest 的配置项中指定预设:
 
 ```json
 {
@@ -25,7 +25,7 @@ yarn add --dev jest-puppeteer
 }
 ```
 
-3.  Write your test
+3. 编写测试代码
 
 ```js
 describe('Google', () => {
@@ -39,19 +39,19 @@ describe('Google', () => {
 });
 ```
 
-There's no need to load any dependencies. Puppeteer's `page` and `browser` classes will automatically be exposed
+这里是不需要载入任何依赖的。Puppeteer 的 `page` 和 `browser` 类会自动暴露出来。
 
-See [documentation](https://github.com/smooth-code/jest-puppeteer).
+请查阅[相关文档](https://github.com/smooth-code/jest-puppeteer)。
 
-## Custom example without jest-puppeteer preset
+## 不使用 jest-puppeteer 预设的自定义示例
 
-You can also hook up puppeteer from scratch. The basic idea is to:
+你也可以从零开始自行接入 puppeteer。基本思路是：
 
-1.  launch & file the websocket endpoint of puppeteer with Global Setup
-2.  connect to puppeteer from each Test Environment
-3.  close puppeteer with Global Teardown
+1. 在全局配置中启动并写入 puppeteer 的 websocket 端点；
+2. 从每个测试环境中连接到 puppeteer；
+3. 通过全局卸载关闭 puppeteer。
 
-Here's an example of the GlobalSetup script
+下面是一个全局配置的例子：
 
 ```js
 // setup.js
@@ -65,17 +65,17 @@ const DIR = path.join(os.tmpdir(), 'jest_puppeteer_global_setup');
 
 module.exports = async function () {
   const browser = await puppeteer.launch();
-  // store the browser instance so we can teardown it later
-  // this global is only available in the teardown but not in TestEnvironments
+  // 储存浏览器示例，以便于之后卸载
+  // 这里的全局变量只会在卸载时允许访问，测试环境中无法访问
   global.__BROWSER_GLOBAL__ = browser;
 
-  // use the file system to expose the wsEndpoint for TestEnvironments
+  // 使用文件系统给测试环境暴露出 wsEndpoint
   mkdirp.sync(DIR);
   fs.writeFileSync(path.join(DIR, 'wsEndpoint'), browser.wsEndpoint());
 };
 ```
 
-Then we need a custom Test Environment for puppeteer
+接下来我们需要一个自定义的 puppeteer 测试环境
 
 ```js
 // puppeteer_environment.js
@@ -94,13 +94,13 @@ class PuppeteerEnvironment extends NodeEnvironment {
 
   async setup() {
     await super.setup();
-    // get the wsEndpoint
+    // 获取到 wsEndpoint
     const wsEndpoint = fs.readFileSync(path.join(DIR, 'wsEndpoint'), 'utf8');
     if (!wsEndpoint) {
       throw new Error('wsEndpoint not found');
     }
 
-    // connect to puppeteer
+    // 连接上 puppeteer
     this.global.__BROWSER__ = await puppeteer.connect({
       browserWSEndpoint: wsEndpoint,
     });
@@ -118,7 +118,7 @@ class PuppeteerEnvironment extends NodeEnvironment {
 module.exports = PuppeteerEnvironment;
 ```
 
-Finally we can close the puppeteer instance and clean-up the file
+最后我们可以关闭 puppeteer 实例，并且清理掉文件。
 
 ```js
 // teardown.js
@@ -128,15 +128,15 @@ const path = require('path');
 
 const DIR = path.join(os.tmpdir(), 'jest_puppeteer_global_setup');
 module.exports = async function () {
-  // close the browser instance
+  // 关闭浏览器实例
   await global.__BROWSER_GLOBAL__.close();
 
-  // clean-up the wsEndpoint file
+  // 清理 wsEndpoint 文件
   rimraf.sync(DIR);
 };
 ```
 
-With all the things set up, we can now write our tests like this:
+以上都准备好之后，我们现在就可以编写我们的测试代码了，如下所示：
 
 ```js
 // test.js
@@ -160,7 +160,7 @@ describe(
 );
 ```
 
-Finally, set `jest.config.js` to read from these files. (The `jest-puppeteer` preset does something like this under the hood.)
+最后，设置 `jest.config.js` 来从这些文件中读取内容。(`jest-puppeteer` 预设的幕后其实就是在做类似的事情)
 
 ```js
 module.exports = {
@@ -170,4 +170,4 @@ module.exports = {
 };
 ```
 
-Here's the code of [full working example](https://github.com/xfumihiro/jest-puppeteer-example).
+这里是[完整功能示例](https://github.com/xfumihiro/jest-puppeteer-example)的代码。
