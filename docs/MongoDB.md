@@ -1,21 +1,21 @@
 ---
 id: mongodb
-title: Using with MongoDB
+title: 结合 MongoDB 使用
 ---
 
-With the [Global Setup/Teardown](Configuration.md#globalsetup-string) and [Async Test Environment](Configuration.md#testenvironment-string) APIs, Jest can work smoothly with [MongoDB](https://www.mongodb.com/).
+通过[全局配置/卸载](Configuration.md#globalsetup-string)和[异步测试环境](Configuration.md#testenvironment-string)的 API, Jest 就可以与 [MongoDB](https://www.mongodb.com/) 无缝衔接了。
 
-## Use jest-mongodb Preset
+## 使用 jest-mongodb 预设
 
-[Jest MongoDB](https://github.com/shelfio/jest-mongodb) provides all required configuration to run your tests using MongoDB.
+[Jest MongoDB](https://github.com/shelfio/jest-mongodb) 提供了使用 MongoDB 运行测试代码所需要的所有配置。
 
-1.  First install `@shelf/jest-mongodb`
+1. 首先，安装 `@shelf/jest-mongodb`
 
 ```
 yarn add @shelf/jest-mongodb --dev
 ```
 
-2.  Specify preset in your Jest configuration:
+2. 在 Jest 的配置项中指定预设:
 
 ```json
 {
@@ -23,7 +23,7 @@ yarn add @shelf/jest-mongodb --dev
 }
 ```
 
-3.  Write your test
+3. 编写测试代码
 
 ```js
 const {MongoClient} = require('mongodb');
@@ -56,6 +56,6 @@ describe('insert', () => {
 });
 ```
 
-There's no need to load any dependencies.
+这里是不需要载入任何依赖的。
 
-See [documentation](https://github.com/shelfio/jest-mongodb) for details (configuring MongoDB version, etc).
+更多细节请查阅[相关文档](https://github.com/shelfio/jest-mongodb) (包含 MongoDB 版本配置等)。
