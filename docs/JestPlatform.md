@@ -3,7 +3,7 @@ id: jest-platform
 title: Jest 平台
 ---
 
-你可以使用 cherry pick 拉取 Jest 中的特定功能，将其作为独立的包进行引用。下面列出了可用的包：
+你可以选择 Jest 的特定功能，将其作为独立的包进行引用。下面列出了可用的包：
 
 ## jest-changed-files
 
@@ -119,9 +119,9 @@ console.log(result);
 
 ## jest-worker
 
-一个用于任务之间平行化(Parallelization)的模块。导出了一个 `JestWorker` 类，其中包含了 Node.js 的模块路径，如果模块导出的方法是类级方法，则可以允许调用，并且返回一个 promise，在指定的方法于一个分叉进程(Forked Process)中结束执行时 resolve。
+一个用于任务之间并行化(Parallelization)的模块。导出了一个 `JestWorker` 类，其中包含了 Node.js 的模块路径，如果模块导出的方法是类级方法，则可以允许调用，并且返回一个 promise，在指定的方法于一个分叉进程(Forked Process)中结束执行时 resolve。
 
-### Example
+### 举例
 
 ```javascript
 // heavy-task.js
