@@ -16,4 +16,4 @@ Jest 周围的社区正在努力提高测试体验。
 
 Jest 社区维护着一个与 Jest 相关的重要项目和资源的 [awesome-jest](https://github.com/jest-community/awesome-jest) 列表，其中包括了所有项目，而不仅仅是 Jest 社区中的项目。
 
-如果您有什么值得分享的东西，请随时与我们联系！我们很乐意将您的项目分享到 awesome-jest 的项目列表中（[点击这里即可分享](https://github.com/jest-community/awesome-jest/pulls)），或者您可以将您的项目迁移到 Jest 社区，从而成为社区的所有者之一。
+如果您有什么值得分享的东西，请随时与我们联系！我们很乐意将您的项目分享到 awesome-jest 的项目列表中（[在这里发起一个 PR](https://github.com/jest-community/awesome-jest/pulls)），或者如果您想将您的项目迁移到 Jest 社区，请向社区的所有者联系。
