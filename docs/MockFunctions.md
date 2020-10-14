@@ -3,9 +3,9 @@ id: mock-functions
 title: 模拟函数
 ---
 
-模拟函数能够使你通过擦除函数的实际实现、捕获对函数的调用 ( 以及在这些调用中传递的参数) 、在使用 new 实例化时捕获构造函数的实例、允许测试时配置返回值等方法，来测试代码之间的关联。
+模拟函数能够使你通过擦除函数的实际实现、捕获对函数的调用 ( 以及在这些调用中传递的参数) 、在使用`new`实例化时捕获构造函数的实例、允许测试时配置返回值等方法，来测试代码之间的关联。
 
-有两种使用模拟函数的方法: 一种方法是在测试代码中创建一个模拟函数, 另一种方法是编写一个[`手工模拟`](ManualMocks.md)来覆盖模块依赖
+有两种使用模拟函数的方法: 一种方法是在测试代码中创建一个模拟函数, 另一种方法是编写一个[`手工模拟`](ManualMocks.md)函数来覆盖模块依赖
 
 ## 使用模拟函数
 
@@ -96,7 +96,8 @@ console.log(myMock(), myMock(), myMock(), myMock());
 ```javascript
 const filterTestFn = jest.fn();
 
-// 令模拟函数的首次调用时的返回值为`true`，第二次调用时为`false`
+// 令模拟函数的首次调用时的返回值为`true`，
+// 第二次调用时为`false`
 filterTestFn.mockReturnValueOnce(true).mockReturnValueOnce(false);
 
 const result = [11, 12].filter(num => filterTestFn(num));
@@ -153,7 +154,6 @@ test('should fetch users', () => {
 
 不过，在某些情况下，超越指定返回值的功能并完全替换模拟函数的实现是有用的。 这可以通过对模拟函数使用`jest.fn`或`mockImplementationOnce`方法来完成。
 
-
 ```javascript
 const myMockFn = jest.fn(cb => cb(null, true));
 
@@ -206,7 +206,6 @@ console.log(myMockFn(), myMockFn(), myMockFn(), myMockFn());
 // > 'first call', 'second call', 'default', 'default'
 ```
 
-For cases where we have methods that are typically chained (and thus always need to return `this`), we have a sugary API to simplify this in the form of a `.mockReturnThis()` function that also sits on all mocks:
 针对一些我们通常使用链式方法（因此总是需要返回`this`）的情况，我们提供了一个API语法糖————`.mockReturnThis（）`函数以简化这类情况，该函数也位于所有模拟中：
 
 ```javascript
@@ -223,7 +222,7 @@ const otherObj = {
 };
 ```
 
-## Mock Names
+## Mock名称
 
 您可以选择为模拟函数提供一个名称，该名称将在测试错误输出中显示，而不是显示`jest.fn（)`。 如果您希望能够快速识别在测试输出中报告错误的模拟功能，请使用此功能。
 
@@ -235,7 +234,7 @@ const myMockFn = jest
   .mockName('add42');
 ```
 
-## Custom Matchers
+## 自定义匹配器
 
 最后，为了减少对如何调用模拟函数的要求，我们为您添加了一些自定义匹配器函数：
 
@@ -246,10 +245,10 @@ expect(mockFunc).toHaveBeenCalled();
 // 模拟函数至少被调用一次且包含特定的参数
 expect(mockFunc).toHaveBeenCalledWith(arg1, arg2);
 
-// 模拟函数最后一次被调用时具有特点的参数
+// 模拟函数最后一次被调用时具有特定的参数
 expect(mockFunc).toHaveBeenLastCalledWith(arg1, arg2);
 
-// 所以的调用和模拟的名称被写入简介
+// 所有的调用和模拟的名称被作为快照写入
 expect(mockFunc).toMatchSnapshot();
 ```
 
