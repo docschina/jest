@@ -1,13 +1,13 @@
 ---
 id: setup-teardown
-title: Setup and Teardown
+title: 初始化与卸载
 ---
 
 通常，在编写测试程序时，您需要在测试程序运行之前进行一些设置工作，在测试程序运行后需要进行一些整理工作。Jest提供了辅助功能来处理此问题。
 
 ## 为多次测试重复设置
 
-如果您有一些工作需要对多个测试重复进行，则可以使用 “beforeEach” 和 “ afterEach”。
+如果您有一些工作需要对多个测试重复进行，则可以使用 `beforeEach` 和 ` afterEach`。
 
 例如，我们考虑一些与城市信息数据库进行交互的测试。 你必须在每个测试之前调用方法 `initializeCityDatabase()`，同时必须在每个测试后，调用方法 `clearCityDatabase()`。你可以这样做：
 
@@ -129,7 +129,7 @@ describe('Scoped / Nested block', () => {
 
 ## describe 和 test 块的执行顺序
 
-Jest 会在所有真正的测试开始之前先执行测试文件里所有的 describe 处理程序（handlers）。 这是在 `before*` 和 `after*` 处理程序中而不是在describe块中执行setup和teardown的另一个原因。 一旦describe块完成，默认情况下Jest会按照在收集阶段遇到的顺序运行所有测试，等待每个测试完成并整理好，然后再继续。
+Jest 会在所有真正的测试开始之前先执行测试文件里所有的 describe 块内代码。 这也是为什么要在 `before*` 和 `after*` 块中而不是在 describe 块中执行初始化构建和卸载的另一个原因。 一旦 describe 块完成，默认情况下Jest会按照在收集阶段遇到的顺序运行所有测试，等待每个测试完成并整理好，然后再继续。
 
 考虑以下的示例性测试文件和输出:
 
