@@ -1,8 +1,9 @@
+---
+id: tutorial-async
+title: An Async Example
+---
 
-# An Async Example
-
-
-首先, 像 [Getting Started](GettingStarted.md#using-babel) 里面所说的那样, 启用babel的支持。
+首先, 像 [快速入门](GettingStarted.md#using-babel) 里面所说的那样, 启用babel的支持。
 
 让我们实现一个从 API 获取用户数据并返回用户名的模块。
 
@@ -25,7 +26,8 @@ const http = require('http');
 
 export default function request(url) {
   return new Promise(resolve => {
-    // 这是一个 HTTP 请求的例子, 用来从 API 中获取用户信息。
+    // 这是一个 HTTP 请求的例子
+    //用来从 API 中获取用户信息
     // 这个模块正在 __mocks__/request.js 中进行模拟
     http.get({path: url}, response => {
       let data = '';
@@ -67,7 +69,7 @@ jest.mock('../request');
 
 import * as user from '../user';
 
-// promise 的 assertion 必须被返回。
+// promise 的断言必须被返回。
 it('works with promises', () => {
   expect.assertions(1);
   return user.getUserName(4).then(data => expect(data).toEqual('Mark'));
@@ -78,7 +80,7 @@ it('works with promises', () => {
 
 ## `.resolves`
 
-有一种不那么冗长的方式是使用 `resolves`，让它与任何其他匹配器一起展开 一个 fulfilled 状态的 promise 的值。如果 promise 状态是 rejected，则 assertion 将失败。
+有一种不那么冗长的方式是使用 `resolves`，让它与任何其他匹配器一起展开 一个 fulfilled 状态的 promise 的值。如果 promise 状态是 rejected，则断言将失败。
 
 ```js
 it('works with resolves', () => {
@@ -110,7 +112,7 @@ it('works with async/await and resolves', async () => {
 
 ## 错误处理
 
-可以使用 `.catch` 方法处理错误。确保添加了 `expect.assertions` 来验证是否调用了一定数量的 assertions 。否则，一个 fulfilled 状态的 promise 不会使测试失败：
+可以使用 `.catch` 方法处理错误。确保添加了 `expect.assertions` 来验证是否调用了一定数量的断言 。否则，一个 fulfilled 状态的 promise 不会使测试失败：
 
 ```js
 // 使用 Promise.catch 测试异步错误
@@ -138,8 +140,7 @@ it('tests error with async/await', async () => {
 
 ## `.rejects`
 
-`.rejects` 和 `.resolves` 一样，都能帮助程序。如果 promise 状态是 fulfilled，测试将自动失败。
-`expect.assertions(number)` 不是必需的，但建议用于验证在测试期间是否调用了一定数量的 [assertions](https://jestjs.io/docs/en/expect#expectassertionsnumber) 。 否则很容易忘记 `return` 或者 `await` `.resolves` 的 assertion.
+`.rejects` 助手的工作方式和 `.resolves` 助手类似，都能帮助程序。如果 promise 状态是 fulfilled，测试将自动失败。`expect.assertions(number)` 不是必需的，但建议用于验证在测试期间是否调用了一定数量的 [断言](https://jestjs.io/docs/en/expect#expectassertionsnumber) 。 否则很容易忘记 `return` 或者 `await` `.resolves` 的断言。
 
 ```js
 // 使用 `.rejects` 测试异步错误
@@ -150,7 +151,7 @@ it('tests error with rejects', () => {
   });
 });
 
-// 或者使用 async/await 和 `.rejects`.
+// 或者针对 `.rejects` 使用 async/await 和。
 it('tests error with async/await and rejects', async () => {
   expect.assertions(1);
   await expect(user.getUserName(3)).rejects.toEqual({
