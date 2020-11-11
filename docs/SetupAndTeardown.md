@@ -1,15 +1,15 @@
 ---
 id: setup-teardown
-title: Setup and Teardown
+title: 初始化与卸载
 ---
 
-Often while writing tests you have some setup work that needs to happen before tests run, and you have some finishing work that needs to happen after tests run. Jest provides helper functions to handle this.
+通常，在编写测试程序时，您需要在测试程序运行之前进行一些设置工作，在测试程序运行后需要进行一些整理工作。Jest提供了辅助功能来处理此问题。
 
-## Repeating Setup For Many Tests
+## 为多次测试重复设置
 
-If you have some work you need to do repeatedly for many tests, you can use `beforeEach` and `afterEach`.
+如果您有一些工作需要对多个测试重复进行，则可以使用 `beforeEach` 和 ` afterEach`。
 
-For example, let's say that several tests interact with a database of cities. You have a method `initializeCityDatabase()` that must be called before each of these tests, and a method `clearCityDatabase()` that must be called after each of these tests. You can do this with:
+例如，我们考虑一些与城市信息数据库进行交互的测试。 你必须在每个测试之前调用方法 `initializeCityDatabase()`，同时必须在每个测试后，调用方法 `clearCityDatabase()`。你可以这样做：
 
 ```js
 beforeEach(() => {
@@ -29,7 +29,7 @@ test('city database has San Juan', () => {
 });
 ```
 
-`beforeEach` and `afterEach` can handle asynchronous code in the same ways that [tests can handle asynchronous code](TestingAsyncCode.md) - they can either take a `done` parameter or return a promise. For example, if `initializeCityDatabase()` returned a promise that resolved when the database was initialized, we would want to return that promise:
+`beforeEach` 和 `afterEach` 能够通过与 [异步代码测试](TestingAsyncCode.md) 相同的方式来处理异步代码  — 它们可以接收一个 done 参数或返回一个 promise。 例如，如果 `initializeCityDatabase()` 返回数据库初始化成功时的 promise ，我们会想到这样去返回这一 promise︰
 
 ```js
 beforeEach(() => {
@@ -37,11 +37,11 @@ beforeEach(() => {
 });
 ```
 
-## One-Time Setup
+## 一次性设置
 
-In some cases, you only need to do setup once, at the beginning of a file. This can be especially bothersome when the setup is asynchronous, so you can't do it inline. Jest provides `beforeAll` and `afterAll` to handle this situation.
+在某些情况下，你只需要在文件的开头做一次设置。 当设置是异步的时，这会特别麻烦，因此您不能内联执行。 Jest 提供了 beforeAll 和 afterAll 处理这种情况
 
-For example, if both `initializeCityDatabase` and `clearCityDatabase` returned promises, and the city database could be reused between tests, we could change our test code to:
+例如，如果 `initializeCityDatabase` 和 `clearCityDatabase` 都返回了 promise ，城市数据库可以在多个测试中重用，我们可以把我们的测试代码改成这样:
 
 ```js
 beforeAll(() => {
@@ -61,14 +61,14 @@ test('city database has San Juan', () => {
 });
 ```
 
-## Scoping
+## 作用域
 
-By default, the `before` and `after` blocks apply to every test in a file. You can also group tests together using a `describe` block. When they are inside a `describe` block, the `before` and `after` blocks only apply to the tests within that `describe` block.
+默认情况下，`before` 和 `after` 块可以应用到文件中的每个测试。 此外可以通过 `describe` 块来将多个测试组合在一起。 当 `before` 和 `after` 块在 `describe` 块内部时，则其只适用于该 `describe` 块内的测试。
 
-For example, let's say we had not just a city database, but also a food database. We could do different setup for different tests:
+例如，我们不仅有一个城市数据库，而且还有一个食品数据库。 我们可以为不同的测试进行不同的设置：
 
 ```js
-// Applies to all tests in this file
+// 应用于此文件中的所有测试
 beforeEach(() => {
   return initializeCityDatabase();
 });
@@ -82,7 +82,7 @@ test('city database has San Juan', () => {
 });
 
 describe('matching cities to foods', () => {
-  // Applies only to tests in this describe block
+  // 仅用于 describle 块级内的测试
   beforeEach(() => {
     return initializeFoodDatabase();
   });
@@ -97,7 +97,7 @@ describe('matching cities to foods', () => {
 });
 ```
 
-Note that the top-level `beforeEach` is executed before the `beforeEach` inside the `describe` block. It may help to illustrate the order of execution of all hooks.
+注意，顶层的 `beforeEach` 在 `describe` 块级内的 `beforeEach` 之前被执行。 这可能有助于说明所有钩子的执行顺序。
 
 ```js
 beforeAll(() => console.log('1 - beforeAll'));
@@ -127,11 +127,11 @@ describe('Scoped / Nested block', () => {
 // 1 - afterAll
 ```
 
-## Order of execution of describe and test blocks
+## describe 和 test 块的执行顺序
 
-Jest executes all describe handlers in a test file _before_ it executes any of the actual tests. This is another reason to do setup and teardown inside `before*` and `after*` handlers rather than inside the describe blocks. Once the describe blocks are complete, by default Jest runs all the tests serially in the order they were encountered in the collection phase, waiting for each to finish and be tidied up before moving on.
+Jest 会在所有真正的测试开始之前先执行测试文件里所有的 describe 块内代码。 这也是为什么要在 `before*` 和 `after*` 块中而不是在 describe 块中执行初始化构建和卸载的另一个原因。 一旦 describe 块完成，默认情况下Jest会按照在收集阶段遇到的顺序运行所有测试，等待每个测试完成并整理好，然后再继续。
 
-Consider the following illustrative test file and output:
+考虑以下的示例性测试文件和输出:
 
 ```js
 describe('outer', () => {
@@ -173,9 +173,9 @@ describe('outer', () => {
 // test for describe inner 2
 ```
 
-## General Advice
+## 通用建议
 
-If a test is failing, one of the first things to check should be whether the test is failing when it's the only test that runs. To run only one test with Jest, temporarily change that `test` command to a `test.only`:
+如果一个测试失败了，第一件要检查的事就是，当只有这一条测试在运行时，它是否是失败的。要使用 Jest 只运行一个测试，可暂时将 `test` 命令更改为 `test.only`
 
 ```js
 test.only('this will be the only test that runs', () => {
@@ -187,4 +187,4 @@ test('this test will not run', () => {
 });
 ```
 
-If you have a test that often fails when it's run as part of a larger suite, but doesn't fail when you run it alone, it's a good bet that something from a different test is interfering with this one. You can often fix this by clearing some shared state with `beforeEach`. If you're not sure whether some shared state is being modified, you can also try a `beforeEach` that logs data.
+如果您有一个测试，当它作为一个更大的套件的一部分运行时经常失败，但是当您单独运行它时却没有失败，那么很有可能来自不同测试的某些东西正在干扰这个测试。通常可以通过使用 `beforeach` 清除某些共享状态来解决此问题。如果不确定是否修改了某些共享状态，也可以尝试使用 `beforeach` 记录数据。
