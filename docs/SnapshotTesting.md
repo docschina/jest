@@ -3,13 +3,13 @@ id: snapshot-testing
 title: Snapshot Testing
 ---
 
-Snapshot tests are a very useful tool whenever you want to make sure your UI does not change unexpectedly.
+无论何时，如果你想确保自己的UI不会出现意外的变化，快照测试将是你非常有用的工具。
 
-A typical snapshot test case for a mobile app renders a UI component, takes a snapshot, then compares it to a reference snapshot file stored alongside the test. The test will fail if the two snapshots do not match: either the change is unexpected, or the reference snapshot needs to be updated to the new version of the UI component.
+一个典型的移动端程序的快照测试用例包含如下过程：渲染一个UI组件、创建一个快照，然后将其与测试所存的参考快照文件进行比较。如果两份快照不能正确匹配，则表示测试不通过，其通常分为两种情况：一是UI组件产生了预期之外的改变，二是参考快照需要同步最新版本的UI组件。
 
-## Snapshot Testing with Jest
+## 使用Jest进行快照（Snapshot）测试
 
-A similar approach can be taken when it comes to testing your React components. Instead of rendering the graphical UI, which would require building the entire app, you can use a test renderer to quickly generate a serializable value for your React tree. Consider this [example test](https://github.com/facebook/jest/blob/master/examples/snapshot/__tests__/link.react.test.js) for a [Link component](https://github.com/facebook/jest/blob/master/examples/snapshot/Link.react.js):
+上述类似的方法同样能够应用于测试你的React组件。你可以使用一个测试渲染器为你的React tree生成可序列化的值，而不用渲染需要构建整个应用程序的图形化UI。可以参考一个针对[Link 组件](https://github.com/facebook/jest/blob/master/examples/snapshot/Link.react.js)的[示例测试](https://github.com/facebook/jest/blob/master/examples/snapshot/__tests__/link.react.test.js)：
 
 ```javascript
 import React from 'react';
@@ -24,7 +24,7 @@ it('renders correctly', () => {
 });
 ```
 
-The first time this test is run, Jest creates a [snapshot file](https://github.com/facebook/jest/blob/master/examples/snapshot/__tests__/__snapshots__/link.react.test.js.snap) that looks like this:
+第一次运行该测试时，Jest会创建一个[快照文件](https://github.com/facebook/jest/blob/master/examples/snapshot/__tests__/__snapshots__/link.react.test.js.snap) ，如下所示：
 
 ```javascript
 exports[`renders correctly 1`] = `
@@ -39,17 +39,17 @@ exports[`renders correctly 1`] = `
 `;
 ```
 
-The snapshot artifact should be committed alongside code changes, and reviewed as part of your code review process. Jest uses [pretty-format](https://github.com/facebook/jest/tree/master/packages/pretty-format) to make snapshots human-readable during code review. On subsequent test runs Jest will compare the rendered output with the previous snapshot. If they match, the test will pass. If they don't match, either the test runner found a bug in your code (in this case, it's `<Link>` component) that should be fixed, or the implementation has changed and the snapshot needs to be updated.
+快照文件应该同代码更改一起提交，并且作为你code review过程中的一个部分。Jest使用[pretty-format](https://github.com/facebook/jest/tree/master/packages/pretty-format) 在code review过程中使得快照代码具有可读性。在随后的测试运行过程中，Jest将组件所渲染的输出与先前的快照进行比较。如果两者匹配，则表示测试通过。如果两者不匹配，则说明测试运行器在你的代码（本例中为`<Link>`组件）中发现了一个bug，应予以修复，或者代码的实现已更改，对应的快照需要与之同步。
 
-> Note: The snapshot is directly scoped to the data you render – in our example it's `<Link />` component with page prop passed to it. This implies that even if any other file has missing props (Say, `App.js`) in the `<Link />` component, it will still pass the test as the test doesn't know the usage of `<Link />` component and it's scoped only to the `Link.react.js`. Also, Rendering the same component with different props in other snapshot tests will not affect the first one, as the tests don't know about each other.
+> 注意：快照直接作用于你渲染的数据————在我们的示例中，其为带有页面prop值传入的`<Link />`组件，这表示尽管其他任意文件（例如 `App.js`）使用`<Link />`组件时缺少props，它也能通过测试，因为该测试并不知道`<Link />`组件的实际用法，且测试范围仅限于`Link.react.js`文件。同样，在其他快照测试中使用不同的props来渲染同一组件并不会影响第一个测试，因为这些测试彼此之间并不相通
 
-More information on how snapshot testing works and why we built it can be found on the [release blog post](https://jestjs.io/blog/2016/07/27/jest-14.html). We recommend reading [this blog post](http://benmccormick.org/2016/09/19/testing-with-jest-snapshots-first-impressions/) to get a good sense of when you should use snapshot testing. We also recommend watching this [egghead video](https://egghead.io/lessons/javascript-use-jest-s-snapshot-testing-feature?pl=testing-javascript-with-jest-a36c4074) on Snapshot Testing with Jest.
+有关快照测试如何进行以及为什么构建快照测试的更多信息，请参考 [release blog post](https://jestjs.io/blog/2016/07/27/jest-14.html)。我们推荐你阅读[this blog post](http://benmccormick.org/2016/09/19/testing-with-jest-snapshots-first-impressions/)，以明确什么时候来使用快照测试。我们同样推荐你观看关于使用Jest进行快照测试的视频[egghead video](https://egghead.io/lessons/javascript-use-jest-s-snapshot-testing-feature?pl=testing-javascript-with-jest-a36c4074)。
 
-### Updating Snapshots
+### 更新快照
 
-It's straightforward to spot when a snapshot test fails after a bug has been introduced. When that happens, go ahead and fix the issue and make sure your snapshot tests are passing again. Now, let's talk about the case when a snapshot test is failing due to an intentional implementation change.
+当代码中存在bug时，可以很容易在快照测试失败后进行定位。如果发生这种情况，请继续并修复对应问题，以确保快照测试再次通过。现在，让我们由于有意的更改组件实现而导致快照测试失败的情况。
 
-One such situation can arise if we intentionally change the address the Link component in our example is pointing to.
+如果我们有意更改示例中Link组件的链接地址的指向，则会出现这种情况。
 
 ```javascript
 // Updated test case with a Link to a different address
@@ -61,51 +61,52 @@ it('renders correctly', () => {
 });
 ```
 
-In that case, Jest will print this output:
+在这种情况下。Jest将打印如下输出：
 
 ![](/img/content/failedSnapshotTest.png)
 
-Since we just updated our component to point to a different address, it's reasonable to expect changes in the snapshot for this component. Our snapshot test case is failing because the snapshot for our updated component no longer matches the snapshot artifact for this test case.
+由于我们刚刚将组件更新为指向一个不同的链接地址，因此能够合理的预期此组件快照的更改。我们的快照测试示例测试未通过，原因在于已更改组件的快照不再与测试用例中的快照工件相匹配。
 
-To resolve this, we will need to update our snapshot artifacts. You can run Jest with a flag that will tell it to re-generate snapshots:
+为解决此问题，我们将需要更新测试用例中的快照工件。你可以运行Jest，并附带一个标志参数，它表示重新生成快照。
 
 ```bash
 jest --updateSnapshot
 ```
 
-Go ahead and accept the changes by running the above command. You may also use the equivalent single-character `-u` flag to re-generate snapshots if you prefer. This will re-generate snapshot artifacts for all failing snapshot tests. If we had any additional failing snapshot tests due to an unintentional bug, we would need to fix the bug before re-generating snapshots to avoid recording snapshots of the buggy behavior.
+继续并通过运行上述命令接受更改。你也可以使用等效的单字符标志参数`-u`来重新生成快照。需要注意的是，这将为所有失败的快照测试重新生成快照工件，如果由于意外的bug而导致快照测试失败，我们需要在重新生成快照前，先修复该bug，以此避免记录带有错误行为的快照。
 
-If you'd like to limit which snapshot test cases get re-generated, you can pass an additional `--testNamePattern` flag to re-record snapshots only for those tests that match the pattern.
+如果你想要限制重新生成哪些测试快照用例，则可以额外传递一个`--testNamePattern`参数标志来重新记录那些与模式相匹配的测试的快照。
 
-You can try out this functionality by cloning the [snapshot example](https://github.com/facebook/jest/tree/master/examples/snapshot), modifying the `Link` component, and running Jest.
+你可以通过克隆[快照用例](https://github.com/facebook/jest/tree/master/examples/snapshot), 修改`Link`组件并运行Jest来测试这一功能。
 
-### Interactive Snapshot Mode
+### 交互性快照模式
 
-Failed snapshots can also be updated interactively in watch mode:
+失败的快照也能在监测模式下进行交互式更新：
 
 ![](/img/content/interactiveSnapshot.png)
 
-Once you enter Interactive Snapshot Mode, Jest will step you through the failed snapshots one test at a time and give you the opportunity to review the failed output.
+进入交互性快照模式后，Jest将在一次测试中逐步引导你通过失败的快照，并给予你观察错误的日志输出。
 
-From here you can choose to update that snapshot or skip to the next:
+此处，你可以选择更新此快照或者跳至下一步：
 
 ![](/img/content/interactiveSnapshotUpdate.gif)
 
-Once you're finished, Jest will give you a summary before returning back to watch mode:
+完成上述过程后，Jest将在返回监测模式之前，为你提供一份简要报告。
 
 ![](/img/content/interactiveSnapshotDone.png)
 
-### Inline Snapshots
+### 内联快照
 
-Inline snapshots behave identically to external snapshots (`.snap` files), except the snapshot values are written automatically back into the source code. This means you can get the benefits of automatically generated snapshots without having to switch to an external file to make sure the correct value was written.
+内联快照的行为与外部快照 (`.snap` 文件)基本一致，不同之处在于前者的快照值将自动写回源代码之中，这意味着你可以享受自动生成快照的好处，而不必切换到外部文件来确保写入正确的值。
 
-> Inline snapshots are powered by [Prettier](https://prettier.io). To use inline snapshots you must have `prettier` installed in your project. Your Prettier configuration will be respected when writing to test files.
+> 内联快照由[Prettier](https://prettier.io)提供支持，使用内联快照时必须确保项目中已经安装`prettier`，当写入快照至测试文件时将遵循你的Prettier配置。
 >
-> If you have `prettier` installed in a location where Jest can't find it, you can tell Jest how to find it using the [`"prettierPath"`](./Configuration.md#prettierpath-string) configuration property.
+> 如果Jest无法找到你的`prettier`的安装位置，你可以通过设置[`"prettierPath"`](./Configuration.md#prettierpath-string) 配置属性来告诉Jest如何找到它.
 
-**Example:**
+**示例:**
 
 First, you write a test, calling `.toMatchInlineSnapshot()` with no arguments:
+首先，你写了一个不带参数的测试函数`.toMatchInlineSnapshot()`：
 
 ```javascript
 it('renders correctly', () => {
@@ -116,7 +117,7 @@ it('renders correctly', () => {
 });
 ```
 
-The next time you run Jest, `tree` will be evaluated, and a snapshot will be written as an argument to `toMatchInlineSnapshot`:
+然后运行Jest时，`tree`将被计算出来，并且一份快照将被作为参数写入`toMatchInlineSnapshot`函数：
 
 ```javascript
 it('renders correctly', () => {
@@ -136,11 +137,11 @@ it('renders correctly', () => {
 });
 ```
 
-That's all there is to it! You can even update the snapshots with `--updateSnapshot` or using the `u` key in `--watch` mode.
+以上就是其全部了，你也可以通过运行时带上`--updateSnapshot`标志参数来更新快照，或者在`--watch`模式下输入`u`进行快照更新。
 
-### Property Matchers
+### 属性匹配器
 
-Often there are fields in the object you want to snapshot which are generated (like IDs and Dates). If you try to snapshot these objects, they will force the snapshot to fail on every run:
+通常，在对象中有一些字段需要快照，这些字段是运算生成的（比如id和Dates）。如果尝试对这些对象进行快照，它们将强制快照在每次运行时失败：
 
 ```javascript
 it('will fail every time', () => {
@@ -163,7 +164,7 @@ Object {
 `;
 ```
 
-For these cases, Jest allows providing an asymmetric matcher for any property. These matchers are checked before the snapshot is written or tested, and then saved to the snapshot file instead of the received value:
+对于这些情况，Jest允许为任何属性提供非对称匹配器。在写入或测试快照之前，将检查这些匹配器，然后将其直接保存到快照文件而不是保存运算结果值：
 
 ```javascript
 it('will check the matchers and pass', () => {
@@ -189,7 +190,7 @@ Object {
 `;
 ```
 
-Any given value that is not a matcher will be checked exactly and saved to the snapshot:
+任何不是匹配器的给定值都将被精确检查并保存到快照：
 
 ```javascript
 it('will check the values and pass', () => {
@@ -213,37 +214,37 @@ Object {
 `;
 ```
 
-## Best Practices
+## 最佳实践
 
-Snapshots are a fantastic tool for identifying unexpected interface changes within your application – whether that interface is an API response, UI, logs, or error messages. As with any testing strategy, there are some best-practices you should be aware of, and guidelines you should follow, in order to use them effectively.
+快照是一个极好的工具，能用于识别应用程序中的意外接口更改，无论该接口是API响应、UI、日志还是错误消息。与任何测试策略一样，为了有效地使用它们，您应该了解一些最佳实践，并遵循一些指导原则。
 
-### 1. Treat snapshots as code
+### 1. 将快照视为代码
 
-Commit snapshots and review them as part of your regular code review process. This means treating snapshots as you would any other type of test or code in your project.
+提交快照并将其作为常规代码检查过程的一部分进行检查，这意味着像对待项目中任何其他类型的测试文件或代码一样对待快照。
 
-Ensure that your snapshots are readable by keeping them focused, short, and by using tools that enforce these stylistic conventions.
+通过保持快照内容集中、简短，并使用一些强制约束这些风格的工具，来确保快照的可读性。
 
-As mentioned previously, Jest uses [`pretty-format`](https://yarnpkg.com/en/package/pretty-format) to make snapshots human-readable, but you may find it useful to introduce additional tools, like [`eslint-plugin-jest`](https://yarnpkg.com/en/package/eslint-plugin-jest) with its [`no-large-snapshots`](https://github.com/jest-community/eslint-plugin-jest/blob/master/docs/rules/no-large-snapshots.md) option, or [`snapshot-diff`](https://yarnpkg.com/en/package/snapshot-diff) with its component snapshot comparison feature, to promote committing short, focused assertions.
+正如上文提到，Jest使用[`pretty-format`](https://yarnpkg.com/en/package/pretty-format)来保证快照的可读性，但你会发现额外引入其他工具非常有用，比如[`eslint-plugin-jest`](https://yarnpkg.com/en/package/eslint-plugin-jest)，通过配置它的[`no-large-snapshots`](https://github.com/jest-community/eslint-plugin-jest/blob/master/docs/rules/no-large-snapshots.md)选项，或者使用[`snapshot-diff`](https://yarnpkg.com/en/package/snapshot-diff)的组件快照比较功能，能够很好的促使你提交简短、集中的断言。
 
-The goal is to make it easy to review snapshots in pull requests, and fight against the habit of regenerating snapshots when test suites fail instead of examining the root causes of their failure.
+其目标是使你在代码PR（pull requests）中更容易地进行快照Code Review，并在测试套件失败时，促使你改变不检查其失败的根本原因而直接重新生成快照的坏习惯。
 
-### 2. Tests should be deterministic
+### 2. 测试应该是确定性的
 
-Your tests should be deterministic. Running the same tests multiple times on a component that has not changed should produce the same results every time. You're responsible for making sure your generated snapshots do not include platform specific or other non-deterministic data.
+你的测试应该是确定性的。在未更改的组件上多次运行相同的测试，每次都会产生相同的结果。你应该负责确保所生成的快照不包含特定于平台的数据或其他不确定的数据。
 
-For example, if you have a [Clock](https://github.com/facebook/jest/blob/master/examples/snapshot/Clock.react.js) component that uses `Date.now()`, the snapshot generated from this component will be different every time the test case is run. In this case we can [mock the Date.now() method](MockFunctions.md) to return a consistent value every time the test is run:
+例如，现有一个[Clock](https://github.com/facebook/jest/blob/master/examples/snapshot/Clock.react.js)组件，其使用`Date.now()`方法，则每次运行测试用例时，此组件生成的快照都将不同。在这种情况下，我们可以[模拟（mock） Date.now() 方法](MockFunctions.md) ，以使得每次运行测试时保证返回值一致：
 
 ```js
 Date.now = jest.fn(() => 1482363367071);
 ```
 
-Now, every time the snapshot test case runs, `Date.now()` will return `1482363367071` consistently. This will result in the same snapshot being generated for this component regardless of when the test is run.
+现在，每次快照测试用例运行时，`Date.now()`方法将始终返回一致结果`1482363367071`。这样，无论测试何时运行，都将确保为该组件生成相同的快照
 
-### 3. Use descriptive snapshot names
+### 3. 使用描述性快照名称
 
-Always strive to use descriptive test and/or snapshot names for snapshots. The best names describe the expected snapshot content. This makes it easier for reviewers to verify the snapshots during review, and for anyone to know whether or not an outdated snapshot is the correct behavior before updating.
+始终尽量去为快照文件使用具有描述性测试名称或快照名称。好的文件名称能够更详尽地描述快照的预期内容，从而使得审阅者更容易在代码检查过程中进行快照验证，并且在快照更新之前让所有人都明确过时的快照是否具有正确的行为。
 
-For example, compare:
+例如，比较下面两段代码：
 
 ```js
 exports[`<UserName /> should handle some test case`] = `null`;
@@ -268,6 +269,7 @@ exports[`<UserName /> should render Alan Turing`] = `
 ```
 
 Since the later describes exactly what's expected in the output, it's more clear to see when it's wrong:
+由于后者准确地描述了输出中预期的内容，因此更清楚地看到错误：
 
 ```js
 exports[`<UserName /> should render null`] = `
@@ -279,40 +281,40 @@ exports[`<UserName /> should render null`] = `
 exports[`<UserName /> should render Alan Turing`] = `null`;
 ```
 
-## Frequently Asked Questions
+## 常见问题解答
 
-### Are snapshots written automatically on Continuous Integration (CI) systems?
+### 快照是否自动写入连续集成（Continuous Integration，CI）系统？
 
-No, as of Jest 20, snapshots in Jest are not automatically written when Jest is run in a CI system without explicitly passing `--updateSnapshot`. It is expected that all snapshots are part of the code that is run on CI and since new snapshots automatically pass, they should not pass a test run on a CI system. It is recommended to always commit all snapshots and to keep them in version control.
+并不是。从Jest 20开始，当Jest在CI系统中运行而没有显式传递`--updateSnapshot`时，Jest中的快照不会自动写入其中。所有快照都是在CI上运行的代码的一部分，由于新快照会自动通过，因此它们不应在CI系统上的测试运行。此外，建议始终提交所有快照并将其保存在版本控制之中。
 
-### Should snapshot files be committed?
+### 是否应提交快照文件？
 
-Yes, all snapshot files should be committed alongside the modules they are covering and their tests. They should be considered part of a test, similar to the value of any other assertion in Jest. In fact, snapshots represent the state of the source modules at any given point in time. In this way, when the source modules are modified, Jest can tell what changed from the previous version. It can also provide a lot of additional context during code review in which reviewers can study your changes better.
+是的。所有快照文件都应该与它们所覆盖的模块及其测试一起提交。它们应该被视为测试的一部分，类似于任何其他在Jest中断言的值。实际上，快照表示源模块在任何给定时间点的状态。这样，当源模块被修改时，Jest可以判断出与前一个版本相比发生了什么变化。它还可以在Code Review期间提供许多额外的上下文信息，在这些上下文信息中审阅者可以更好地研究你的更改。
 
-### Does snapshot testing only work with React components?
+### 快照测试只适用于React组件吗？
 
-[React](TutorialReact.md) and [React Native](TutorialReactNative.md) components are a good use case for snapshot testing. However, snapshots can capture any serializable value and should be used anytime the goal is testing whether the output is correct. The Jest repository contains many examples of testing the output of Jest itself, the output of Jest's assertion library as well as log messages from various parts of the Jest codebase. See an example of [snapshotting CLI output](https://github.com/facebook/jest/blob/master/e2e/__tests__/console.test.ts) in the Jest repo.
+[React](TutorialReact.md) and [React Native](TutorialReactNative.md) 组件是快照测试的一个很好的用例。事实上，快照可以捕获任何可序列化的值，并且应在任何需要判断目标测试输出是否正确的场景下使用。Jest仓库包含许多测试Jest本身输出、Jest断言库的输出以及来自Jest代码库各个部分的日志消息的示例。请参见Jest仓库中[snapshotting CLI output](https://github.com/facebook/jest/blob/master/e2e/__tests__/console.test.ts)的示例。
 
-### What's the difference between snapshot testing and visual regression testing?
+### 快照测试和可视化回归测试有什么区别？
 
-Snapshot testing and visual regression testing are two distinct ways of testing UIs, and they serve different purposes. Visual regression testing tools take screenshots of web pages and compare the resulting images pixel by pixel. With Snapshot testing values are serialized, stored within text files, and compared using a diff algorithm. There are different trade-offs to consider and we listed the reasons why snapshot testing was built in the [Jest blog](https://jestjs.io/blog/2016/07/27/jest-14.html#why-snapshot-testing).
+快照测试和可视化回归测试是测试UI的两种不同的方法，它们的目的不同。可视化回归测试工具获取网页的屏幕截图，并逐像素比较结果图像。使用快照测试时，组件值被序列化，存储在文本文件中，并使用diff算法进行比较。有许多不同的权衡项需要被考虑，我们在[Jest blog](https://jestjs.io/blog/2016/07/27/jest-14.html#why-snapshot-testing)中列出了构建快照测试的原因。
 
-### Does snapshot testing replace unit testing?
+### 快照测试能取代单元测试吗？
 
-Snapshot testing is only one of more than 20 assertions that ship with Jest. The aim of snapshot testing is not to replace existing unit tests, but to provide additional value and make testing painless. In some scenarios, snapshot testing can potentially remove the need for unit testing for a particular set of functionalities (e.g. React components), but they can work together as well.
+快照测试只是Jest附带的20多个断言工具中的一个。快照测试的目的不是取代现有的单元测试，而是提供附加选项，以使测试变得轻松。在某些场景中，快照测试可能会移除对特定功能集（例如React组件）的单元测试需求，但它们也可以一起工作。
 
-### What is the performance of snapshot testing regarding speed and size of the generated files?
+### 关于快照测试的性能，以及其生成文件的速度和大小如何？
 
-Jest has been rewritten with performance in mind, and snapshot testing is not an exception. Since snapshots are stored within text files, this way of testing is fast and reliable. Jest generates a new file for each test file that invokes the `toMatchSnapshot` matcher. The size of the snapshots is pretty small: For reference, the size of all snapshot files in the Jest codebase itself is less than 300 KB.
+Jest已经在代码重构时考虑到了性能，其中的快照测试也不例外。由于快照存储在文本文件中，因此这种测试方法既快速又可靠。Jest为调用 `toMatchSnapshot`匹配器的每个测试文件生成一个新文件。快照的大小非常小：作为参考，Jest代码库中所有快照文件的大小都小于300kb。
 
-### How do I resolve conflicts within snapshot files?
+### 如何解决快照文件中的冲突？
 
-Snapshot files must always represent the current state of the modules they are covering. Therefore, if you are merging two branches and encounter a conflict in the snapshot files, you can either resolve the conflict manually or update the snapshot file by running Jest and inspecting the result.
+快照文件必须始终表示它们所覆盖的模块的当前状态。因此，当合并两个分支并在快照文件中遇到冲突，则可以手动解决冲突，也可以通过运行Jest并检查结果来更新快照文件。
 
-### Is it possible to apply test-driven development principles with snapshot testing?
+### 是否可以将测试驱动开发原则应用于快照测试？
 
-Although it is possible to write snapshot files manually, that is usually not approachable. Snapshots help to figure out whether the output of the modules covered by tests is changed, rather than giving guidance to design the code in the first place.
+虽然可以手动写入快照文件，但这通常是不可实现的。快照有助于确定测试覆盖的模块的输出是否发生了更改，而不是首先为代码的设计提供指导。
 
-### Does code coverage work with snapshot testing?
+### 代码覆盖能够和快照测试一起使用吗？
 
-Yes, as well as with any other test.
+是的，其能够与其他任何测试一起使用
