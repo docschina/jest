@@ -3,17 +3,17 @@ title: Jest Community
 id: jest-community
 ---
 
-The community around Jest is working hard to make the testing experience even greater.
+Jest 周围的社区正在努力提高测试体验。
 
-[jest-community](https://github.com/jest-community) is a new GitHub organization for high quality Jest additions curated by Jest maintainers and collaborators. It already features some of our favorite projects, to name a few:
+[Jest 社区](https://github.com/jest-community) 是一个新的 GitHub 组织，由 Jest 维护者和合作者们添加一些与 Jest 相关的高质量的内容。它已经包含了一些受欢迎的项目，例如：
 
 - [vscode-jest](https://github.com/jest-community/vscode-jest)
 - [jest-extended](https://github.com/jest-community/jest-extended)
 - [eslint-plugin-jest](https://github.com/jest-community/eslint-plugin-jest)
 - [awesome-jest](https://github.com/jest-community/awesome-jest)
 
-Community projects under one organisation are a great way for Jest to experiment with new ideas/techniques and approaches. Encourage contributions from the community and publish contributions independently at a faster pace.
+组织社区项目是 Jest 扩展新技术和新方法的有效方式。鼓励社区成员作出贡献，并以更快的速度公布其作出的贡献。
 
-The jest-community org maintains an [awesome-jest](https://github.com/jest-community/awesome-jest) list of great projects and resources related to Jest, this includes all projects not just the ones in the jest-community org.
+Jest 社区维护着一个与 Jest 相关的重要项目和资源的 [awesome-jest](https://github.com/jest-community/awesome-jest) 列表，其中包括了所有项目，而不仅仅是 Jest 社区中的项目。
 
-If you have something awesome to share, feel free to reach out to us! We'd love to share your project on the awesome-jest list ([send a PR here](https://github.com/jest-community/awesome-jest/pulls)) or if you would like to transfer your project to the jest-community org reachout to one of the owners of the org.
+如果您有什么值得分享的东西，请随时与我们联系！我们很乐意将您的项目分享到 awesome-jest 的项目列表中（[在这里发起一个 PR](https://github.com/jest-community/awesome-jest/pulls)），或者如果您想将您的项目迁移到 Jest 社区，请向社区的所有者联系。
