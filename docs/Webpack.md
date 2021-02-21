@@ -3,11 +3,11 @@ id: webpack
 title: Using with webpack
 ---
 
-Jest can be used in projects that use [webpack](https://webpack.js.org/) to manage assets, styles, and compilation. webpack _does_ offer some unique challenges over other tools because it integrates directly with your application to allow managing stylesheets, assets like images and fonts, along with the expansive ecosystem of compile-to-JavaScript languages and tools.
+Jest 可以用在使用了 [webpack](https://webpack.js.org/) 的项目中去管理静态资源、样式和编译。与其它工具相比 webpack 有一些独特的优势，因为它直接与应用程序集成，允许管理样式表、图像和字体等资源，并且对于编译 Javascript 代码， Webpack 提供了广阔的生态系统和工具。
 
-## A webpack example
+## 一个 webpack 例子
 
-Let's start with a common sort of webpack config file and translate it to a Jest setup.
+让我们从一种常见的webpack配置文件开始，并将其转换为Jest设置。
 
 ```js
 // webpack.config.js
@@ -36,11 +36,11 @@ module.exports = {
 };
 ```
 
-If you have JavaScript files that are transformed by Babel, you can [enable support for Babel](GettingStarted.md#using-babel) by installing the `babel-jest` plugin. Non-Babel JavaScript transformations can be handled with Jest's [`transform`](Configuration.md#transform-objectstring-pathtotransformer--pathtotransformer-object) config option.
+如果您有通过 Babel 转换的JavaScript文件，你可以通过安装 `babel-jest` 插件来 [启用 Babel](GettingStarted.md#using-babel) 。非 Babel 转换的JavaScript 文件可以使用 Jest 的 [`transform`](Configuration.md#transform-objectstring-pathtotransformer--pathtotransformer-object) 配置项来处理。
 
-### Handling Static Assets
+### 处理静态资源
 
-Next, let's configure Jest to gracefully handle asset files such as stylesheets and images. Usually, these files aren't particularly useful in tests so we can safely mock them out. However, if you are using CSS Modules then it's better to mock a proxy for your className lookups.
+接下来，让我们配置 Jest 来优雅地处理一些资源，例如样式文件和图像。 通常，这些文件在测试中并不是特别有用，因此我们可以安全地将它们模拟出来。 但是，如果您使用了CSS Modules，那么最好模拟一个代理来查找类名。
 
 ```json
 // package.json
@@ -54,7 +54,7 @@ Next, let's configure Jest to gracefully handle asset files such as stylesheets 
 }
 ```
 
-And the mock files themselves:
+mock 文件如下：
 
 ```js
 // __mocks__/styleMock.js
@@ -68,15 +68,15 @@ module.exports = {};
 module.exports = 'test-file-stub';
 ```
 
-### Mocking CSS Modules
+### 模拟 CSS Modules
 
-You can use an [ES6 Proxy](https://github.com/keyanzhang/identity-obj-proxy) to mock [CSS Modules](https://github.com/css-modules/css-modules):
+你可以用 [ES6 代理](https://github.com/keyanzhang/identity-obj-proxy) 来模拟 [CSS Modules](https://github.com/css-modules/css-modules):
 
 ```bash
 yarn add --dev identity-obj-proxy
 ```
 
-Then all your className lookups on the styles object will be returned as-is (e.g., `styles.foobar === 'foobar'`). This is pretty handy for React [Snapshot Testing](SnapshotTesting.md).
+然后在 styles 对象里的的所有类名都将原样返回 (例： `styles.foobar === 'foobar'`). 这对于 React 的 [快照测试](SnapshotTesting.md) 是非常方便的.
 
 ```json
 // package.json (for CSS Modules)
@@ -90,9 +90,9 @@ Then all your className lookups on the styles object will be returned as-is (e.g
 }
 ```
 
-> Notice that Proxy is enabled in Node 6 by default. If you are not on Node 6 yet, make sure you invoke Jest using `node --harmony_proxies node_modules/.bin/jest`.
+> 注意，在 Node 6 中代理是默认启用的，如果当前不是在 Node 6 环境下, 请确保使用 `node --harmony_proxies node_modules/.bin/jest`来调用 Jest.
 
-If `moduleNameMapper` cannot fulfill your requirements, you can use Jest's [`transform`](Configuration.md#transform-objectstring-pathtotransformer--pathtotransformer-object) config option to specify how assets are transformed. For example, a transformer that returns the basename of a file (such that `require('logo.jpg');` returns `'logo'`) can be written as:
+如果 `moduleNameMapper` 不足以满足你的需求, 你可以使用 Jest 的 [`transform`](Configuration.md#transform-objectstring-pathtotransformer--pathtotransformer-object) 配置项来指定资源是如何转化的。 举个列子, 一个返回文件基名的转换器 (比如 `require('logo.jpg');` 返回 `'logo'`) 可以写成:
 
 ```js
 // fileTransformer.js
@@ -106,7 +106,7 @@ module.exports = {
 ```
 
 ```json
-// package.json (for custom transformers and CSS Modules)
+// package.json (用于指定转换器和 CSS Modules)
 {
   "jest": {
     "moduleNameMapper": {
@@ -119,9 +119,9 @@ module.exports = {
 }
 ```
 
-We've told Jest to ignore files matching a stylesheet or image extension, and instead, require our mock files. You can adjust the regular expression to match the file types your webpack config handles.
+我们告诉 Jest 去忽略与样式表或图像扩展名匹配的文件，而需要得是我们的 mock 文件。你可以调整正则表达式来匹配你的 webpack 配置处理的文件类型。。
 
-_Note: if you are using babel-jest with additional code preprocessors, you have to explicitly define babel-jest as a transformer for your JavaScript code to map `.js` files to the babel-jest module._
+_注意: 如果您将 babel jest和其他代码预处理器一起使用，则必须显式地将 babel jest 定义为 JavaScript 代码的转换器，以便将“.js”文件映射到 babel jest 模块._
 
 ```json
 "transform": {
@@ -131,9 +131,9 @@ _Note: if you are using babel-jest with additional code preprocessors, you have 
 }
 ```
 
-### Configuring Jest to find our files
+### 配置 Jest 来查找文件
 
-Now that Jest knows how to process our files, we need to tell it how to _find_ them. For webpack's `modulesDirectories`, and `extensions` options there are direct analogs in Jest's `moduleDirectories` and `moduleFileExtensions` options.
+既然 Jest 知道如何处理我们的文件, 我们需要告诉它如何去查找它们. 对于 webpack 的 `modulesDirectories`, 和 `extensions` 选项， Jest 的 `moduleDirectories` 和 `moduleFileExtensions` 与其有直接的相似之处.
 
 ```json
 // package.json
@@ -150,9 +150,9 @@ Now that Jest knows how to process our files, we need to tell it how to _find_ t
 }
 ```
 
-> Note: `<rootDir>` is a special token that gets replaced by Jest with the root of your project. Most of the time this will be the folder where your `package.json` is located unless you specify a custom `rootDir` option in your configuration.
+> 注意: `<rootDir>` 是一个特殊的标记，是 Jest 用你项目的根目录替换而来. 大部分情况下会在 `package.json` 文件所在的文件夹下， 除非你在配置中指定了自定义的“rootDir”选项.
 
-Similarly webpack's `resolve.root` option functions like setting the `NODE_PATH` env variable, which you can set, or make use of the `modulePaths` option.
+与 webpack 的 `resolve.root` 选项功能类似，你也可以设置 `NODE_PATH` 环境变量, 或者使用 `modulePaths` 选项。
 
 ```json
 // package.json
@@ -169,7 +169,7 @@ Similarly webpack's `resolve.root` option functions like setting the `NODE_PATH`
 }
 ```
 
-And finally, we have to handle the webpack `alias`. For that we can make use of the `moduleNameMapper` option again.
+最后，为了我们可以再次使用“moduleNameMapper”选项，我们要处理 webpack 的“alias”。
 
 ```json
 // package.json
@@ -190,13 +190,13 @@ And finally, we have to handle the webpack `alias`. For that we can make use of 
 }
 ```
 
-That's it! webpack is a complex and flexible tool, so you may have to make some adjustments to handle your specific application's needs. Luckily for most projects, Jest should be more than flexible enough to handle your webpack config.
+webpack 是一个复杂而灵活的工具，所以你可能需要进行一些必要的调整才能满足您特定应用程序的需求。 幸运的是，对于大多数项目，Jest 应该具有足够的灵活性来处理您的webpack 配置。
 
-> Note: For more complex webpack configurations, you may also want to investigate projects such as: [babel-plugin-webpack-loaders](https://github.com/istarkov/babel-plugin-webpack-loaders).
+> 注意: 对于更复杂的 Webpack 配置，你可能还需要研究一些项目，比如: [babel-plugin-webpack-loaders](https://github.com/istarkov/babel-plugin-webpack-loaders).
 
-## Using with webpack 2
+## 使用 webpack 2
 
-webpack 2 offers native support for ES modules. However, Jest runs in Node, and thus requires ES modules to be transpiled to CommonJS modules. As such, if you are using webpack 2, you most likely will want to configure Babel to transpile ES modules to CommonJS modules only in the `test` environment.
+webpack 2为 ES 模块提供了原生的支持。 但是，Jest 在 Node 中运行，因此需要将ES 模块转换为 CommonJS 模块。 因此，如果您使用的是 webpack 2, 你应该十分乐意将 Babel 配置为仅在“test”环境中将 ES 模块转换为 CommonJS 模块。
 
 ```json
 // .babelrc
@@ -211,9 +211,9 @@ webpack 2 offers native support for ES modules. However, Jest runs in Node, and 
 }
 ```
 
-> Note: Jest caches files to speed up test execution. If you updated .babelrc and Jest is still not working, try running Jest with `--no-cache`.
+> 注意: Jest 会缓存文件来加快测试执行的速度。 如果你更新了.babelrc，而 Jest 仍然无法运行，请尝试使用`--no-cache` 运行Jest。
 
-If you use dynamic imports (`import('some-file.js').then(module => ...)`), you need to enable the `dynamic-import-node` plugin.
+如果你需要使用动态导入 (`import('some-file.js').then(module => ...)`), 则你需要启用 `dynamic-import-node` 插件.
 
 ```json
 // .babelrc
@@ -230,4 +230,4 @@ If you use dynamic imports (`import('some-file.js').then(module => ...)`), you n
 }
 ```
 
-For an example of how to use Jest with Webpack with React, Redux, and Node, you can view one [here](https://github.com/jenniferabowd/jest_react_redux_node_webpack_complex_example).
+有关如何在使用 Webpack , React, Redux, 以及 Node 的项目中使用 Jest, 你可以在 [这里](https://github.com/jenniferabowd/jest_react_redux_node_webpack_complex_example) 查看一个示例。
